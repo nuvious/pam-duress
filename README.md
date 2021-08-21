@@ -74,11 +74,11 @@ auth    [success=1 default=ignore]      pam_duress.o
 auth    requisite                       pam_deny.so
 ```
 
-### Order of Operations Duress
+### Order of Operations Normal Password
  - User enters their standard username and password.
  - pam_unix.o confirms them and returns PAM_SUCESS and skips 2 past pam_deny.o.
 
-### Order of Operations Duress
+### Order of Operations Duress Password
  - The pam_unix.o module first checks standard username and password, but since the duress password is not the users actuall password it fails resulting in a default behavior of 'ignore' per the configuration.
  - PAM then applies the username/password to pam_duress.o which:
    - Enumerates files in /etc/duress.d/

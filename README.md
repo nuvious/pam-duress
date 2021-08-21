@@ -21,8 +21,9 @@ sudo apt-get install build-essential libpam0g-dev libssl-dev
 
 ```bash
 make
-
 sudo make install
+make clean
+# make uninstall
 ```
 
 ## Configuration

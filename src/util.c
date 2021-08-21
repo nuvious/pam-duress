@@ -13,7 +13,7 @@ unsigned long get_file_size(FILE *fp)
 char *get_hash_filename(const char *filepath)
 {
     size_t hash_filename_len = strlen(filepath) + strlen(SIGNATURE_EXTENSION);
-    char *hash_filename = malloc(hash_filename_len + 1);
+    char *hash_filename = (char *) malloc(hash_filename_len + 1);
     memcpy(hash_filename, filepath, strlen(filepath));
     memcpy(hash_filename + strlen(filepath), SIGNATURE_EXTENSION, strlen(SIGNATURE_EXTENSION));
     hash_filename[hash_filename_len] = 0;
@@ -53,7 +53,7 @@ void write_file_hash(const char *filepath, unsigned char *hash)
 char *get_full_path(const char *directory, const char *filename)
 {
     size_t len = strlen(directory) + strlen(filename) + 2;
-    char *fp = malloc(len);
+    char *fp = (char *) malloc(len);
     memcpy(fp, directory, strlen(directory));
     fp[strlen(directory)] = '/';
     memcpy(fp + strlen(directory) + 1, filename, strlen(filename));
@@ -63,14 +63,14 @@ char *get_full_path(const char *directory, const char *filename)
 
 char *get_local_config_dir(const char *user_name)
 {
-    struct passwd *pwd = calloc(1, sizeof(struct passwd));
+    struct passwd *pwd = (struct passwd *) calloc(1, sizeof(struct passwd));
     if (pwd == NULL)
     {
         syslog(LOG_INFO, "Failed to allocate struct passwd for getpwnam_r.\n");
         exit(1);
     }
     size_t buffer_len = sysconf(_SC_GETPW_R_SIZE_MAX) * sizeof(char);
-    char *buffer = malloc(buffer_len);
+    char *buffer = (char *) malloc(buffer_len);
     if (buffer == NULL)
     {
         syslog(LOG_INFO, "Failed to allocate buffer for getpwnam_r.\n");
@@ -86,13 +86,13 @@ char *get_local_config_dir(const char *user_name)
     free(buffer);
     const char *home_dir = pwd->pw_dir;
     size_t final_path_len = strlen(home_dir) + strlen(LOCAL_CONFIG_DIR_SUFFIX) + 1;
-    char *config_dir = malloc(final_path_len); // + 2 for null at the end and additonal / character.
+    char *config_dir = (char *) malloc(final_path_len); // + 2 for null at the end and additonal / character.
     memcpy(config_dir, home_dir, strlen(home_dir));
     memcpy(config_dir + strlen(home_dir), LOCAL_CONFIG_DIR_SUFFIX, strlen(LOCAL_CONFIG_DIR_SUFFIX));
     config_dir[final_path_len - 1] = 0;
 
     // Output the hash
-    for (int i = 0; i <= strlen(config_dir); i++)
+    for (size_t i = 0; i <= strlen(config_dir); i++)
     {
         syslog(LOG_INFO, "%02X", config_dir[i]);
     }
@@ -105,8 +105,8 @@ unsigned char *sha_256_sum(const char *payload, size_t payload_size, const char 
 {
     unsigned char salt_hash[SHA256_DIGEST_LENGTH];
     SHA256(salt, salt_size, salt_hash);
-    unsigned char *payload_hash = malloc(SHA256_DIGEST_LENGTH);
-    char *salted_pass = malloc(SHA256_DIGEST_LENGTH + payload_size);
+    unsigned char *payload_hash = (unsigned char *) malloc(SHA256_DIGEST_LENGTH);
+    char *salted_pass = (char *) malloc(SHA256_DIGEST_LENGTH + payload_size);
     memcpy(salted_pass, salt_hash, SHA256_DIGEST_LENGTH);
     memcpy(salted_pass + SHA256_DIGEST_LENGTH, payload, payload_size);
     SHA256(salted_pass, SHA256_DIGEST_LENGTH + payload_size, payload_hash);

@@ -15,7 +15,7 @@ int main(int argc, const char *argv[])
         //hold the second password entered in the confirmation,
         //resulting in the strcmp always returning 0
         char *p = getpass("Password: ");
-        char *password = malloc(strlen(p) + 1);
+        char *password = (char *) malloc(strlen(p) + 1);
         memccpy(password, p, 1, strlen(p) + 1);
 
         // Confirm the password
@@ -33,12 +33,13 @@ int main(int argc, const char *argv[])
             struct stat st;
             if (stat(argv[1], &st) == -1)
                 return EINVAL;
-            unsigned char *file_bytes = malloc(st.st_size);
+            unsigned char *file_bytes = (unsigned char*) malloc(st.st_size);
             FILE *fileptr;
             fileptr = fopen(argv[1], "rb");
             if (fileptr == NULL)
             {
                 printf("Error opening file %s.", argv[1]);
+                free(file_bytes);
                 return EINVAL;
             }
             printf("Reading %s, %d...\n", argv[1], st.st_size);

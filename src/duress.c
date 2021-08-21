@@ -83,7 +83,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 
       // Allowed permisions are 500, 700, 540, 550 and 770
       // Ensure file is readable and executable by the user.
-      if (st.st_mode & S_IRUSR == 0)
+      if ((st.st_mode & S_IRUSR) == 0)
       {
 #ifdef DEBUG
             syslog(LOG_INFO, "Improper permissions. USR R\n");
@@ -97,7 +97,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #endif //DEBUG
             return 0;
       }
-      if (st.st_mode & S_IXUSR == 0)
+      if ((st.st_mode & S_IXUSR) == 0)
       {
 #ifdef DEBUG
             syslog(LOG_INFO, "Improper permissions. USR X\n");
@@ -148,7 +148,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #ifdef DEBUG
       syslog(LOG_INFO, "Loading hash file %s, %d...\n", hash_file, SHA256_DIGEST_LENGTH);
 #endif //DEBUG
-      unsigned char *hash = malloc(SHA256_DIGEST_LENGTH);
+      unsigned char *hash = (unsigned char*) malloc(SHA256_DIGEST_LENGTH);
       FILE *hashfileptr;
       hashfileptr = fopen(hash_file, "rb");
       if (hashfileptr == NULL)
@@ -156,6 +156,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #ifdef DEBUG
             syslog(LOG_ERR, "Error reading %s, %d...\n", hash_file, st.st_size);
 #endif //DEBUG
+            free(hash);
             return 0;
       }
       fread(hash, 1, SHA256_DIGEST_LENGTH, hashfileptr);
@@ -164,7 +165,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
       // Output the hash
 
       //Load the durress executable
-      unsigned char *file_bytes = malloc(st.st_size);
+      unsigned char *file_bytes = (unsigned char *) malloc(st.st_size);
       FILE *fileptr;
       fileptr = fopen(filepath, "rb");
       if (fileptr == NULL)
@@ -172,6 +173,8 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #ifdef DEBUG
             syslog(LOG_ERR, "Error reading %s, %d...\n", filepath, st.st_size);
 #endif //DEBUG
+            free(file_bytes);
+            free(hash);
             return 0;
       }
 #ifdef DEBUG
@@ -211,6 +214,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #ifdef DEBUG
             syslog(LOG_INFO, "Hash mismatch\n");
 #endif
+            free(hash);
             return 0;
       }
 
@@ -245,7 +249,7 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
             if (is_valid_duress_file(fpath, pam_pass))
             {
                   syslog(LOG_INFO, "File is valid.\n");
-                  char *cmd = malloc(strlen(pam_user) + strlen(SHELL_CMD) + strlen(fpath) + 21);
+                  char *cmd = (char *) malloc(strlen(pam_user) + strlen(SHELL_CMD) + strlen(fpath) + 21);
                   if (sprintf(cmd, "export PAMUSER=%s; %s %s", pam_user, SHELL_CMD, fpath) < 0)
                   {
                         syslog(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD, fpath);
@@ -255,7 +259,7 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
 #ifdef DEBUG
                         syslog(LOG_INFO, "Running command %s\n", cmd);
 #endif //DEBUG
-                        int status = system(cmd);
+                        system(cmd);
                         ret = 1;
                   }
                   free(cmd);
@@ -269,8 +273,6 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
 
 int execute_duress_scripts(const char *pam_user, const char *pam_pass)
 {
-      int ret = PAM_IGNORE;
-
       int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass);
       int local_duress_run = process_dir(get_local_config_dir(pam_user), pam_user, pam_pass);
 
@@ -284,7 +286,6 @@ int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **ar
 {
       const char *pam_user;
       const char *pam_pass;
-      const char *pam_service;
       int pam_err;
 
       pam_err = pam_get_user(pamh, &pam_user, 0);

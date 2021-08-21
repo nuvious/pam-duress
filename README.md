@@ -108,8 +108,8 @@ $> chmod 400 ~/.duress/hello.sh.sha256
 $> sudo pam_test $USER
 Credentials accepted.
 Password: # Enter the password you signed the hello.sh script with.
-Hello World # This output 
-Account is valid.
+Hello World # This output is from the duress script...
+Account is valid. # ...and we still got a valid authentication.
 Authenticated
 $> sudo pam_test $USER
 Credentials accepted.

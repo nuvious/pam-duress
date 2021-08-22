@@ -119,6 +119,6 @@ Account is valid. # Note, Hello World doesn't print.
 Authenticated
 ```
 
-## Exmample Implementations
+## Example Implementations
 
  - [Use Pushover to Notify IT You're Under Duress](docs/examples/Pushover.md)

@@ -91,13 +91,6 @@ char *get_local_config_dir(const char *user_name)
     memcpy(config_dir + strlen(home_dir), LOCAL_CONFIG_DIR_SUFFIX, strlen(LOCAL_CONFIG_DIR_SUFFIX));
     config_dir[final_path_len - 1] = 0;
 
-    // Output the hash
-    for (size_t i = 0; i <= strlen(config_dir); i++)
-    {
-        syslog(LOG_INFO, "%02X", config_dir[i]);
-    }
-    syslog(LOG_INFO, "\n");
-
     return config_dir;
 }
 

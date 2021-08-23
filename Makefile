@@ -20,15 +20,18 @@ install: $(BIN_DIR)/pam_duress.o $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test
 	cp $(BIN_DIR)/pam_test $(BIN_INSTALL)/
 
 $(OBJS): $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< $(LDLIB) -o $@
 
 duress_sign: $(OBJS)
+	mkdir -p $(BIN_DIR)
 	$(CC) -o $(BIN_DIR)/duress_sign $(OBJ_DIR)/duress_sign.o $(OBJ_DIR)/util.o $(LDLIB)
 
 pam_duress.o:  $(OBJS)
 	ld -x --shared -o $(BIN_DIR)/pam_duress.o $(OBJ_DIR)/duress.o $(OBJ_DIR)/util.o $(LDLIB)
 
 pam_test:
+	mkdir -p $(BIN_DIR)
 	$(CPP) -o $(BIN_DIR)/pam_test src/pam_test.c $(LDLIB)
 
 uninstall:

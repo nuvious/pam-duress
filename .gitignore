@@ -1,7 +1,6 @@
 # Files generated during compilation
 *.o
-pam_test
-duress_sign
+/bin
 
 # Files which may be generated when initially testing generate files.
 *.sha256

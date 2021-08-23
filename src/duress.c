@@ -2,7 +2,7 @@
 #define PAM_SM_AUTH
 #define PAM_SM_PASSWORD
 #define PAM_SM_SESSION
-//#define DEBUG
+#define DEBUG
 
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
@@ -17,6 +17,9 @@
 #include <dirent.h>
 #include <syslog.h>
 #include "util.h"
+
+static const char ROOT_COMMAND[] = "export PAMUSER=%s; %s %s"; // 18 characters not including format items
+static const char USER_COMMAND[] = "export PAMUSER=%s; su - %s -c \"%s %s\""; // 29 characters not including format items
 
 int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
@@ -225,25 +228,37 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
 #endif //DEBUG
             if (is_valid_duress_file(fpath, pam_pass))
             {
-                  syslog(LOG_INFO, "File is valid.\n");
-                  char *cmd = (char *) malloc(
-                        strlen(pam_user) * 2 + 
-                        strlen(SHELL_CMD) + 
-                        strlen(fpath) + 29);
-                  if (sprintf(cmd, 
-                      "export PAMUSER=%s; su - %s -c \"%s %s\"", 
-                      pam_user, run_as_user, SHELL_CMD, fpath) < 0)
-                  {
-                        syslog(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD, fpath);
-                  }
-                  else
-                  {
 #ifdef DEBUG
-                        syslog(LOG_INFO, "Running command %s\n", cmd);
+                  syslog(LOG_INFO, "File is valid.\n");
 #endif //DEBUG
-                        system(cmd);
-                        ret = 1;
+                  char *cmd = NULL;
+                  if (run_as_user != NULL)
+                  {
+                        cmd = (char *) malloc(
+                              strlen(pam_user) * 2 + 
+                              strlen(SHELL_CMD) + 
+                              strlen(fpath) + 29);
+                        if (sprintf(cmd, USER_COMMAND, pam_user, run_as_user, SHELL_CMD, fpath) < 0)
+                        {
+                              syslog(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD, fpath);
+                              return ret;
+                        }
+                  }else{
+                        cmd = (char *) malloc(
+                              strlen(pam_user) + 
+                              strlen(SHELL_CMD) + 
+                              strlen(fpath) + 18);
+                        if (sprintf(cmd, ROOT_COMMAND, pam_user, SHELL_CMD, fpath) < 0)
+                        {
+                              syslog(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD, fpath);
+                              return ret;
+                        }
                   }
+#ifdef DEBUG
+                  syslog(LOG_INFO, "Running command %s\n", cmd);
+#endif //DEBUG
+                  system(cmd);
+                  ret = 1;
                   free(cmd);
             }
             free(fpath);
@@ -255,7 +270,7 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
 
 int execute_duress_scripts(const char *pam_user, const char *pam_pass)
 {
-      int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, "root");
+      int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, NULL);
       int local_duress_run = process_dir(get_local_config_dir(pam_user), pam_user, pam_pass, pam_user);
 
       if (global_duress_run || local_duress_run)

@@ -32,7 +32,7 @@ Configuration of the duress module is split into two different configuration dir
 
 ```bash
 mkdir -p ~/.duress # Local duress scripts/binaries.
-mkdir -p /etc/duress.d  # Global Duress scripts/binaries.
+sudo mkdir -p /etc/duress.d  # Global Duress scripts/binaries.
 ```
 
 After creating the directories you can create scripts, compile binaries, etc and put them in these directories. To assign a password to execute a particular script you use the duress_sign to create a combination password hash and integrity hash for the script.
@@ -52,7 +52,7 @@ drwxr-xr-x 8 user user 4096 Aug 20 15:11 ..
 -r-x------ 1 user user   32 Aug 20 21:49 delete_workspace.sh.sha256
 ```
 
-**NOTE:** Scripts will only execute with permission masks of 500, 540, 550, 700 or 750
+**NOTE:** Scripts will only execute with permission masks of 500, 540, 550, 600 or 650
 
 **NOTE:** User generated duress scripts are only run when they attempt to log in AND use a duress password that one of their scripts is signed with. If user Jill signs their scripts with the same password as a global script, when they use it the global scripts will run, followed by Jill's duress scripts, but Bob, Jane, or Dan's scripts will not be run even if they also re-used the same duress scripts.
 

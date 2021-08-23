@@ -62,8 +62,8 @@ sudo duress_sign /etc/duress.d/pushover.sh
 Password: # For example HackThePlanet
 Confirm: # Again, we type HackThePlanet
 # Ensure it can't be modified later.
-chmod 500 /etc/duress.d/pushover.sh
-chmod 400 /etc/duress.d/pushover.sh.sha256
+sudo chmod 500 /etc/duress.d/pushover.sh
+sudo chmod 400 /etc/duress.d/pushover.sh.sha256
 ```
 
 This will produce a pushover.sh.sha256 file. The has is not the direct hash of the file but rather the hash of the password salted with the sha256 hash of the file.

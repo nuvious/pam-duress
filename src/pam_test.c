@@ -1,10 +1,20 @@
 #include <security/pam_appl.h>
+
+/* macOS uses openpam. https://stackoverflow.com/a/66853251 */
+#ifdef   OPENPAM
+#include <security/openpam.h>
+#define  USE_CONV_FUNC  openpam_ttyconv
+#else
 #include <security/pam_misc.h>
+#define  USE_CONV_FUNC  misc_conv
+#endif
+
+#include <stdlib.h>
 #include <stdio.h>
 #include "version.h"
 
 const struct pam_conv conv = {
-	misc_conv,
+	USE_CONV_FUNC,
 	NULL};
 
 int main(int argc, char *argv[])

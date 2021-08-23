@@ -12,7 +12,7 @@ Contributions to this project are more than welcome; refer to our guidance on ma
 
 ## Demo
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/ShVYxhHUYdg/0.jpg)](https://www.youtube.com/watch?v=ShVYxhHUYdg)
+[![Video Demo - https://www.youtube.com/watch?v=ShVYxhHUYdg](https://img.youtube.com/vi/ShVYxhHUYdg/0.jpg)](https://www.youtube.com/watch?v=ShVYxhHUYdg)
 
 ## Requirements
 

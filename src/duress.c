@@ -164,7 +164,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
       free(hash_file);
       // Output the hash
 
-      //Load the durress executable
+      //Load the duress executable
       unsigned char *file_bytes = (unsigned char *) malloc(st.st_size);
       FILE *fileptr;
       fileptr = fopen(filepath, "rb");
@@ -188,7 +188,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 
       //compute the hash and compare it to the stored hash.
 #ifdef DEBUG
-      syslog(LOG_INFO, "Computing durress hash...");
+      syslog(LOG_INFO, "Computing duress hash...");
 #endif //DEBUG
       unsigned char *duress_hash = sha_256_sum(pam_pass, strlen(pam_pass), file_bytes, st.st_size);
 

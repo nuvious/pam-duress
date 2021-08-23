@@ -4,7 +4,7 @@ int main(int argc, const char *argv[])
 {
     if (argc != 2)
     {
-        printf("Usage:\n\tdurress_sign [FILENAME]\n");
+        printf("Usage:\n\tduress_sign [FILENAME]\n");
         return EINVAL;
     }
     else

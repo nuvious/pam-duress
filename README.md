@@ -70,7 +70,7 @@ To the below:
 ```bash
 # Example /etc/pam.d/common-auth
 auth    [success=2 default=ignore]      pam_unix.so
-auth    [success=1 default=ignore]      pam_duress.o
+auth    [success=1 default=ignore]      pam_duress.so
 
 auth    requisite                       pam_deny.so
 ```
@@ -81,13 +81,13 @@ auth    requisite                       pam_deny.so
 
 ### Order of Operations Duress Password
  - The pam_unix.o module first checks standard username and password, but since the duress password is not the users actuall password it fails resulting in a default behavior of 'ignore' per the configuration.
- - PAM then applies the username/password to pam_duress.o which:
+ - PAM then applies the username/password to pam_duress.so which:
    - Enumerates files in /etc/duress.d/
    - Checks for files that have matching .sha256 extensions
    - Hashes the provided password salted with the sha256 hash of the file and compares it with the one stored in the .sha256 extension file
    - If the hashes match, the script is executed via:
      - `export PAMUSER=[USERNAME]; /bin/sh [FILE]`
-     - NOTE: PAMUSER is set so global duress scripts can specify the account flagging durress.
+     - NOTE: PAMUSER is set so global duress scripts can specify the account flagging duress.
    - Process is repeated for all files in ~/.duress/ for the user attempting to log in.
    - Finally if ANY script is run, PAM_SUCCESS is return. Otherwise PAM_IGNORE is returned.
  - If PAM_SUCESS is returned PAM will skip 1 and move past pam_deny.o to continue the pam module processes, eventually dropping to an authenticated shell. Otherwise the default 'ignore' behavior is honored moving to pam_deny.o, resulting in a failed authentication.

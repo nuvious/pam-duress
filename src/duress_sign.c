@@ -42,7 +42,7 @@ int main(int argc, const char *argv[])
                 free(file_bytes);
                 return EINVAL;
             }
-            printf("Reading %s, %d...\n", argv[1], st.st_size);
+            printf("Reading %s, %lld...\n", argv[1], st.st_size);
             fread(file_bytes, 1, st.st_size, fileptr);
             printf("Done\n");
             fclose(fileptr);

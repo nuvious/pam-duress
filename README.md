@@ -86,7 +86,8 @@ auth    requisite                       pam_deny.so
    - Checks for files that have matching .sha256 extensions
    - Hashes the provided password salted with the sha256 hash of the file and compares it with the one stored in the .sha256 extension file
    - If the hashes match, the script is executed via:
-     - `export PAMUSER=[USERNAME]; /bin/sh [FILE]`
+     - `export PAMUSER=[USERNAME]; /bin/sh [FILE]` for /etc/duress.d scripts (run as root).
+     - `export PAMUSER=[USERNAME]; su - [USERNAME] -c "/bin/sh [FILE]"` for ~/.duress scripts (run as the user).
      - NOTE: PAMUSER is set so global duress scripts can specify the account flagging duress.
    - Process is repeated for all files in ~/.duress/ for the user attempting to log in.
    - Finally if ANY script is run, PAM_SUCCESS is return. Otherwise PAM_IGNORE is returned.

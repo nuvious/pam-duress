@@ -48,7 +48,7 @@ curl -s \
   --form-string "priority=$PRIORITY" \
   --form-string "expire=$EXPIRE" \
   --form-string "retry=$RETRY" \
-  https://api.pushover.net/1/messages.json
+  https://api.pushover.net/1/messages.json 2>&1 1>/dev/null
 
 # Unset variables containing pushover secrets.
 unset APP_TOKEN

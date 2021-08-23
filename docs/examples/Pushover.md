@@ -21,7 +21,7 @@ USER_KEY=[YOUR USER KEY]
 source /root/.pushover_creds
 
 # Format a message.
-MSG="""$PAMUSER has used the durress password on $HOSTNAME.
+MSG="""$PAMUSER has used the duress password on $HOSTNAME.
 Local IP is $( hostname -I ).
 External IP is $( curl https://ipinfo.io/ip 2>/dev/null )"""
 

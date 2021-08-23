@@ -19,7 +19,7 @@ static const char SIGNATURE_EXTENSION[] = ".sha256";
 // Directory in a users home directory that will contain local duress scripts and signatures.
 static const char LOCAL_CONFIG_DIR_SUFFIX[] = "/.duress";
 
-// Directory that contains common durress codes and signature files.
+// Directory that contains common duress codes and signature files.
 static const char GLOBAL_CONFIG_DIR[] = "/etc/duress.d";
 
 static const char SHELL_CMD[] = "/bin/sh";

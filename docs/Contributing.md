@@ -1,5 +1,5 @@
 [<- Back to README.md](../README.md)
-# Contributing to Transcriptase
+# Contributing to PAM-Duress
 
 Continued development on this module is welcome! We want to make contributing to this project as easy and transparent as possible, whether it's:
 

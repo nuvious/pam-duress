@@ -52,7 +52,7 @@ drwxr-xr-x 8 user user 4096 Aug 20 15:11 ..
 -r-x------ 1 user user   32 Aug 20 21:49 delete_workspace.sh.sha256
 ```
 
-**NOTE:** Scripts will only execute with permission masks of 500, 540, 550, 600 or 650
+**NOTE:** Scripts will only execute with permission masks of 500, 540, or 550
 
 **NOTE:** User generated duress scripts are only run when they attempt to log in AND use a duress password that one of their scripts is signed with. If user Jill signs their scripts with the same password as a global script, when they use it the global scripts will run, followed by Jill's duress scripts, but Bob, Jane, or Dan's scripts will not be run even if they also re-used the same duress scripts.
 

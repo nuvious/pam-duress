@@ -123,3 +123,8 @@ Authenticated
 ## Example Implementations
 
  - [Use Pushover to Notify IT You're Under Duress](docs/examples/Pushover.md)
+
+## Reference
+
+ - Initial starter code and test code from [beatgammit/simple-pam](https://github.com/beatgammit/simple-pam).
+ - Contribution guidelines built from template provided by [briandk/CONTRIBUTING.md](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62).

@@ -7,3 +7,8 @@
    - Fixed privilege escalation vulnerability that could allow an unprivileged user to run commands as root.
  - 1.1.1
    - OSX support and makefile improvements contributed by [cormacrelf](https://github.com/cormacrelf).
+ - 1.1.2
+   - Fixed issue #11; error when running scripts under /etc/duress.d resulting in account unavailable error.
+   - Fixed documentationf or pushover script.
+   - Added link to demo video.
+   

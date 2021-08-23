@@ -12,15 +12,7 @@ Contributions to this project are more than welcome; refer to our guidance on ma
 
 ## Demo
 
-<iframe
-    width="640"
-    height="480"
-    src="https://www.youtube.com/embed/ShVYxhHUYdg"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
->
-</iframe>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/ShVYxhHUYdg/0.jpg)](https://www.youtube.com/watch?v=ShVYxhHUYdg)
 
 ## Requirements
 

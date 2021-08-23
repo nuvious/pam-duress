@@ -10,6 +10,18 @@ Duress scripts can be generated on an individual user basis or generated globall
 
 Contributions to this project are more than welcome; refer to our guidance on making contributions [here](docs/Contributing.md).
 
+## Demo
+
+<iframe
+    width="640"
+    height="480"
+    src="https://www.youtube.com/embed/ShVYxhHUYdg"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen
+>
+</iframe>
+
 ## Requirements
 
 ```bash

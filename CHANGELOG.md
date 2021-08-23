@@ -9,6 +9,5 @@
    - OSX support and makefile improvements contributed by [cormacrelf](https://github.com/cormacrelf).
  - 1.1.2
    - Fixed issue #11; error when running scripts under /etc/duress.d resulting in account unavailable error.
-   - Fixed documentationf or pushover script.
+   - Fixed issue #10; documentation or pushover script.
    - Added link to demo video.
-   

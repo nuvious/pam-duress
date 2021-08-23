@@ -90,13 +90,6 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #endif //DEBUG
             return 0;
       }
-      if (st.st_mode & S_IWUSR)
-      {
-#ifdef DEBUG
-            syslog(LOG_INFO, "Improper permissions. USR W\n");
-#endif //DEBUG
-            return 0;
-      }
       if ((st.st_mode & S_IXUSR) == 0)
       {
 #ifdef DEBUG
@@ -278,11 +271,15 @@ int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **ar
       int pam_err;
 
       pam_err = pam_get_user(pamh, &pam_user, 0);
+#ifdef DEBUG
       syslog(LOG_ERR, "PAM ERROR: %d\n", pam_err);
+#endif //DEBUG
       if (pam_err != PAM_SUCCESS)
             return PAM_IGNORE;
       pam_err = pam_get_item(pamh, PAM_AUTHTOK, (const void **)&pam_pass);
+#ifdef DEBUG
       syslog(LOG_ERR, "PAM ERROR: %d\n", pam_err);
+#endif //DEBUG
       if (pam_err != PAM_SUCCESS)
             return PAM_IGNORE;
 

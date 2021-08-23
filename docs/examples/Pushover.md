@@ -14,11 +14,18 @@ USER_KEY=[YOUR USER KEY]
 ```
 
 ```bash
-#!/bin/bash
+#!/bin/sh
 #/etc/duress.d/pushover.sh
 
 # Grab the credentials
-source /root/.pushover_creds
+. /root/.pushover_creds
+
+# Priority of the pushover message.
+PRIORITY=2
+# How long to persist notifications for priority 2.
+EXPIRE=3600 # 1 Hour
+# How often to resend notifications for priority 2.
+RETRY=900 # 15 minutes
 
 # Format a message.
 MSG="""$PAMUSER has used the duress password on $HOSTNAME.
@@ -30,8 +37,9 @@ curl -s \
   --form-string "token=$APP_TOKEN" \
   --form-string "user=$USER_KEY" \
   --form-string "message=$MSG" \
-  # Priority 2 requires acknowledgement and is persistent
-  --form-string "priority=2" \
+  --form-string "priority=$PRIORITY" \
+  --form-string "expire=$EXPIRE" \
+  --form-string "retry=$RETRY" \
   https://api.pushover.net/1/messages.json
 
 # Unset variables containing pushover secrets.

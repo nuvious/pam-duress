@@ -20,7 +20,7 @@ ifeq ($(OS),Darwin)
 	CFLAGS := $(CFLAGS) -Wno-nullability-completeness -Wno-pointer-sign
 	PAM_DIR := /usr/local/lib/pam
 else
-	LDLIB := -lpam -lpam_misc -lssl -lcrypto
+	LDLIB := -lpam -lpam_misc -lssl -lcrypto -lc
 	LDINCLUDE := $(LDLIB)
 	LDFLAGS := -x -shared
 	PAM_DIR := /lib/security

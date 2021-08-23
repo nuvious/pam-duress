@@ -192,22 +192,6 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
 #endif //DEBUG
       unsigned char *duress_hash = sha_256_sum(pam_pass, strlen(pam_pass), file_bytes, st.st_size);
 
-#ifdef DEBUG
-      syslog(LOG_INFO, "Loaded Hash: ");
-      for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-      {
-            syslog(LOG_INFO, "%02X", hash[i]);
-      }
-      syslog(LOG_INFO, "\n");
-      // Output the hash
-      syslog(LOG_INFO, "Computed Hash: ");
-      for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-      {
-            syslog(LOG_INFO, "%02X", duress_hash[i]);
-      }
-      syslog(LOG_INFO, "\n");
-#endif //DEBUG
-
       int result = 1;
       if (memcmp(hash, duress_hash, SHA256_DIGEST_LENGTH))
       {
@@ -224,7 +208,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass)
       return result;
 }
 
-int process_dir(const char *directory, const char *pam_user, const char *pam_pass)
+int process_dir(const char *directory, const char *pam_user, const char *pam_pass, const char* run_as_user)
 {
       int ret = 0;
       struct dirent *de;
@@ -249,8 +233,13 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
             if (is_valid_duress_file(fpath, pam_pass))
             {
                   syslog(LOG_INFO, "File is valid.\n");
-                  char *cmd = (char *) malloc(strlen(pam_user) + strlen(SHELL_CMD) + strlen(fpath) + 21);
-                  if (sprintf(cmd, "export PAMUSER=%s; %s %s", pam_user, SHELL_CMD, fpath) < 0)
+                  char *cmd = (char *) malloc(
+                        strlen(pam_user) * 2 + 
+                        strlen(SHELL_CMD) + 
+                        strlen(fpath) + 29);
+                  if (sprintf(cmd, 
+                      "export PAMUSER=%s; su - %s -c \"%s %s\"", 
+                      pam_user, run_as_user, SHELL_CMD, fpath) < 0)
                   {
                         syslog(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD, fpath);
                   }
@@ -273,8 +262,8 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
 
 int execute_duress_scripts(const char *pam_user, const char *pam_pass)
 {
-      int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass);
-      int local_duress_run = process_dir(get_local_config_dir(pam_user), pam_user, pam_pass);
+      int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, "root");
+      int local_duress_run = process_dir(get_local_config_dir(pam_user), pam_user, pam_pass, pam_user);
 
       if (global_duress_run || local_duress_run)
             return PAM_SUCCESS;

@@ -3,6 +3,14 @@
 
 One simple use case for a duress password is to simply notify IT of the user being in duress. In this demonstration we'll create a script which sends a pushover notification with the username reporting the duress, the hostname, and the current IP.
 
+## Requirements
+
+This will use curl, so install it if not available on your system.
+
+```bash
+sudo apt-get install curl
+```
+
 ## The Script
 
 First we'll make a pushover script. The first step for that should be to generate an app in your pushover account for this purpose. Then you'll want to generate an configuration file:

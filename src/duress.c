@@ -2,7 +2,7 @@
 #define PAM_SM_AUTH
 #define PAM_SM_PASSWORD
 #define PAM_SM_SESSION
-#define DEBUG
+//#define DEBUG
 
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>

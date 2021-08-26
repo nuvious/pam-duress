@@ -11,3 +11,5 @@
    - Fixed issue #11; error when running scripts under /etc/duress.d resulting in account unavailable error.
    - Fixed issue #10; documentation or pushover script.
    - Added link to demo video.
+   - Removed unnecessary casts for malloc calls.
+   - Created dbg_log wrapper function to clean up DEBUG compile flag use.

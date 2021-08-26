@@ -33,21 +33,21 @@ int main(int argc, char *argv[])
 
 	retval = pam_start("check_user", user, &conv, &pamh);
 
-	// Are the credentials correct?
+	/* Are the credentials correct? */
 	if (retval == PAM_SUCCESS)
 	{
 		printf("Credentials accepted.\n");
 		retval = pam_authenticate(pamh, 0);
 	}
 
-	// Can the accound be used at this time?
+	/* Can the accound be used at this time? */
 	if (retval == PAM_SUCCESS)
 	{
 		printf("Account is valid.\n");
 		retval = pam_acct_mgmt(pamh, 0);
 	}
 
-	// Did everything work?
+	/* Did everything work? */
 	if (retval == PAM_SUCCESS)
 	{
 		printf("Authenticated\n");
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		printf("Not Authenticated\n");
 	}
 
-	// close PAM (end session)
+	/* close PAM (end session) */
 	if (pam_end(pamh, retval) != PAM_SUCCESS)
 	{
 		pamh = NULL;

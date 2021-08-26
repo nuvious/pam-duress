@@ -14,15 +14,15 @@
 
 unsigned long get_file_size(FILE *fp);
 
-static const char SIGNATURE_EXTENSION[] = ".sha256";
+static const char *SIGNATURE_EXTENSION = ".sha256";
 
-// Directory in a users home directory that will contain local duress scripts and signatures.
-static const char LOCAL_CONFIG_DIR_SUFFIX[] = "/.duress";
+/* Directory in a users home directory that will contain local duress scripts and signatures. */
+static const char *LOCAL_CONFIG_DIR_SUFFIX = "/.duress";
 
-// Directory that contains common duress codes and signature files.
-static const char GLOBAL_CONFIG_DIR[] = "/etc/duress.d";
+/* Directory that contains common duress codes and signature files. */
+static const char *GLOBAL_CONFIG_DIR = "/etc/duress.d";
 
-static const char SHELL_CMD[] = "/bin/sh";
+static const char *SHELL_CMD = "/bin/sh";
 
 char *get_full_path(const char *directory, const char *filename);
 

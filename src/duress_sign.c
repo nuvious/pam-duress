@@ -9,19 +9,19 @@ int main(int argc, const char *argv[])
     }
     else
     {
-        //Get the password and copy it to a separate buffer.
-        //get_pass uses a signle buffer so callint it twice
-        //in a row will just return the same buffer which will then
-        //hold the second password entered in the confirmation,
-        //resulting in the strcmp always returning 0
+        /* Get the password and copy it to a separate buffer.
+           get_pass uses a signle buffer so callint it twice
+           in a row will just return the same buffer which will then
+           hold the second password entered in the confirmation,
+           resulting in the strcmp always returning 0 */
         char *p = getpass("Password: ");
-        char *password = (char *) malloc(strlen(p) + 1);
+        char *password = malloc(strlen(p) + 1);
         memccpy(password, p, 1, strlen(p) + 1);
 
-        // Confirm the password
+        /* Confirm the password */
         char *confirm = getpass("Confirm: ");
 
-        // Compare the passwords
+        /* Compare the password */
         if (strcmp(password, confirm) != 0)
         {
             printf("Password did not match. Aborting.\n");
@@ -29,11 +29,11 @@ int main(int argc, const char *argv[])
         }
         else
         {
-            // Read int he file to be signed
+            /* Read int he file to be signed */
             struct stat st;
             if (stat(argv[1], &st) == -1)
                 return EINVAL;
-            unsigned char *file_bytes = (unsigned char*) malloc(st.st_size);
+            unsigned char *file_bytes = malloc(st.st_size);
             FILE *fileptr;
             fileptr = fopen(argv[1], "rb");
             if (fileptr == NULL)
@@ -47,27 +47,27 @@ int main(int argc, const char *argv[])
             printf("Done\n");
             fclose(fileptr);
 
-            // Use the file as the salt for the password hash
+            /* Use the file as the salt for the password hash */
             unsigned char *hash = sha_256_sum(password, strlen(password), file_bytes, st.st_size);
 
-            // Don't need the file bytes anymore so clean those up
+            /* Don't need the file bytes anymore so clean those up */
             free(file_bytes);
 
-            // Output the hash
+            /* Output the hash */
             for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
             {
                 printf("%02X", hash[i]);
             }
             printf("\n");
 
-            // Write the hash to [FILE].sha256
+            /* Write the hash to [FILE].sha256 */
             write_file_hash(argv[1], hash);
 
-            // Free up the hash allocation
+            /* Free up the hash allocation */
             free(hash);
         }
 
-        // Free up the password allocation
+        /* Free up the password allocation */
         free(password);
         return 0;
     }

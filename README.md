@@ -10,6 +10,10 @@ Duress scripts can be generated on an individual user basis or generated globall
 
 Contributions to this project are more than welcome; refer to our guidance on making contributions [here](docs/Contributing.md).
 
+## Demo
+
+[![Video Demo - https://www.youtube.com/watch?v=ShVYxhHUYdg](https://img.youtube.com/vi/ShVYxhHUYdg/0.jpg)](https://www.youtube.com/watch?v=ShVYxhHUYdg)
+
 ## Requirements
 
 ```bash
@@ -32,7 +36,7 @@ Configuration of the duress module is split into two different configuration dir
 
 ```bash
 mkdir -p ~/.duress # Local duress scripts/binaries.
-mkdir -p /etc/duress.d  # Global Duress scripts/binaries.
+sudo mkdir -p /etc/duress.d  # Global Duress scripts/binaries.
 ```
 
 After creating the directories you can create scripts, compile binaries, etc and put them in these directories. To assign a password to execute a particular script you use the duress_sign to create a combination password hash and integrity hash for the script.
@@ -52,7 +56,7 @@ drwxr-xr-x 8 user user 4096 Aug 20 15:11 ..
 -r-x------ 1 user user   32 Aug 20 21:49 delete_workspace.sh.sha256
 ```
 
-**NOTE:** Scripts will only execute with permission masks of 500, 540, 550, 700 or 750
+**NOTE:** Scripts will only execute with permission masks of 500, 540, or 550
 
 **NOTE:** User generated duress scripts are only run when they attempt to log in AND use a duress password that one of their scripts is signed with. If user Jill signs their scripts with the same password as a global script, when they use it the global scripts will run, followed by Jill's duress scripts, but Bob, Jane, or Dan's scripts will not be run even if they also re-used the same duress scripts.
 
@@ -86,7 +90,8 @@ auth    requisite                       pam_deny.so
    - Checks for files that have matching .sha256 extensions
    - Hashes the provided password salted with the sha256 hash of the file and compares it with the one stored in the .sha256 extension file
    - If the hashes match, the script is executed via:
-     - `export PAMUSER=[USERNAME]; /bin/sh [FILE]`
+     - `export PAMUSER=[USERNAME]; /bin/sh [FILE]` for /etc/duress.d scripts (run as root).
+     - `export PAMUSER=[USERNAME]; su - [USERNAME] -c "/bin/sh [FILE]"` for ~/.duress scripts (run as the user).
      - NOTE: PAMUSER is set so global duress scripts can specify the account flagging duress.
    - Process is repeated for all files in ~/.duress/ for the user attempting to log in.
    - Finally if ANY script is run, PAM_SUCCESS is return. Otherwise PAM_IGNORE is returned.
@@ -122,3 +127,8 @@ Authenticated
 ## Example Implementations
 
  - [Use Pushover to Notify IT You're Under Duress](docs/examples/Pushover.md)
+
+## Reference
+
+ - Initial starter code and test code from [beatgammit/simple-pam](https://github.com/beatgammit/simple-pam).
+ - Contribution guidelines built from template provided by [briandk/CONTRIBUTING.md](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62).

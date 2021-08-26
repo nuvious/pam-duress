@@ -22,7 +22,7 @@ static const char *LOCAL_CONFIG_DIR_SUFFIX = "/.duress";
 /* Directory that contains common duress codes and signature files. */
 static const char *GLOBAL_CONFIG_DIR = "/etc/duress.d";
 
-static const char *SHELL_CMD = "/bin/sh";
+static char *SHELL_CMD = "/bin/sh";
 
 char *get_full_path(const char *directory, const char *filename);
 

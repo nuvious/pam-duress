@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #ifdef DEBUG
 #include <stdarg.h>

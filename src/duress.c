@@ -233,11 +233,21 @@ int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc,
 
 pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) {
     pid_t pid = fork();
+
     switch (pid) {
         case 0: {
+            /* Redirect sderr and sdout to /dev/null */
+            int fd = open("/dev/null", O_WRONLY | O_CREAT, 0666);
+            dup2(fd, STDOUT_FILENO);
+            dup2(fd, STDERR_FILENO);
+
+            /* craft the command line arguments to execute the script */
             char * argv[] = { SHELL_CMD, "-c", script, NULL };
+            
+            /* get user information struct */
             struct passwd *run_as_pw = getpwnam(run_as_user);
 
+            /* set PAMUSER environment variable for use in /etc/duress.d scripts */
             if (setenv("PAMUSER", pam_user, 1)) {
                 dbg_log(LOG_ERR, "Could not set environment for PAMUSER to %s, %d.\n", pam_user, errno);
                 goto child_failed;
@@ -264,7 +274,7 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
 
         child_failed:
             dbg_log(LOG_ERR, "Could not run script %s, %d.\n", script, errno);
-            _exit(1);
+            exit(1);
             break;
         }
         case -1:

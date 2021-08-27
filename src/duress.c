@@ -1,7 +1,7 @@
 #include "duress.h"
 
 /*
- *Logging wrapper for dbg_log with DEBUG compile flag wrapper.
+ *Logging wrapper for syslog with DEBUG compile flag wrapper.
  */
 void dbg_log(int priority, const char *fmt, ...) {
 #ifdef DEBUG
@@ -242,7 +242,7 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
             dup2(fd, STDERR_FILENO);
 
             /* craft the command line arguments to execute the script */
-            char * argv[] = { SHELL_CMD, "-c", script, NULL };
+            char *argv[] = { SHELL_CMD, "-c", script, NULL };
             
             /* get user information struct */
             struct passwd *run_as_pw = getpwnam(run_as_user);

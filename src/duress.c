@@ -1,30 +1,4 @@
-#define PAM_SM_ACCOUNT
-#define PAM_SM_AUTH
-#define PAM_SM_PASSWORD
-#define PAM_SM_SESSION
-//#define DEBUG
-
-#include "util.h"
-#include <dirent.h>
-#include <openssl/sha.h>
-#include <pwd.h>
-#include <security/pam_appl.h>
-#include <security/pam_modules.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <syslog.h>
-#include <unistd.h>
-
-#ifdef DEBUG
-#include <stdarg.h>
-#endif /* DEBUG */
-
-static const char *ROOT_COMMAND =
-    "export PAMUSER=%s; %s %s";
-static const char *USER_COMMAND =
-    "export PAMUSER=%s; su - %s -c \"%s %s\"";
+#include "duress.h"
 
 /*
  *Logging wrapper for syslog with DEBUG compile flag wrapper.
@@ -203,30 +177,12 @@ int process_dir(const char *directory, const char *pam_user,
 
       dbg_log(LOG_INFO, "File is valid.\n");
 
-      char *cmd = NULL;
       if (run_as_user != NULL) {
-        cmd = malloc(snprintf(NULL, 0, USER_COMMAND, pam_user, run_as_user, SHELL_CMD,
-                    fpath) + 1);
-        if (sprintf(cmd, USER_COMMAND, pam_user, run_as_user, SHELL_CMD,
-                    fpath) < 0) {
-          dbg_log(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD,
-                  fpath);
-          return ret;
-        }
+        run_shell_as(pam_user, run_as_user, fpath);
       } else {
-        cmd = malloc(snprintf(NULL, 0, ROOT_COMMAND, pam_user, SHELL_CMD, fpath) + 1);
-        if (sprintf(cmd, ROOT_COMMAND, pam_user, SHELL_CMD, fpath) < 0) {
-          dbg_log(LOG_ERR, "Failed to format command. %s %s\n", SHELL_CMD,
-                  fpath);
-          return ret;
-        }
+        run_shell_as(pam_user, "root", fpath);
       }
-
-      dbg_log(LOG_INFO, "Running command %s\n", cmd);
-
-      system(cmd);
       ret = 1;
-      free(cmd);
     }
     free(fpath);
   }
@@ -273,4 +229,59 @@ int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const char **argv) {
 int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc,
                      const char **argv) {
   return (PAM_SUCCESS);
+}
+
+pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) {
+    pid_t pid = fork();
+
+    switch (pid) {
+        case 0: {
+            /* Redirect sderr and sdout to /dev/null */
+            int fd = open("/dev/null", O_WRONLY | O_CREAT, 0666);
+            dup2(fd, STDOUT_FILENO);
+            dup2(fd, STDERR_FILENO);
+
+            /* craft the command line arguments to execute the script */
+            char *argv[] = { SHELL_CMD, "-c", script, NULL };
+            
+            /* get user information struct */
+            struct passwd *run_as_pw = getpwnam(run_as_user);
+
+            /* set PAMUSER environment variable for use in /etc/duress.d scripts */
+            if (setenv("PAMUSER", pam_user, 1)) {
+                dbg_log(LOG_ERR, "Could not set environment for PAMUSER to %s, %d.\n", pam_user, errno);
+                goto child_failed;
+            }
+
+            if (!run_as_pw) {
+                dbg_log(LOG_ERR, "Could not getpwnam %s, %d.\n", run_as_user, errno);
+                goto child_failed;
+            }
+
+            /* set the group first; calls to setuid lock out the ability to call setgid */
+            if (setgid(run_as_pw->pw_gid)) {
+                dbg_log(LOG_ERR, "Could not setgid, %d.\n", errno); 
+                goto child_failed;
+            }
+            /* call setuid */
+            if (setuid(run_as_pw->pw_uid)) {
+                dbg_log(LOG_ERR, "Could not setuid, %d.\n", errno); 
+                goto child_failed;
+            }
+
+            /* execute the shell command */
+            execv(SHELL_CMD, argv);
+
+        child_failed:
+            dbg_log(LOG_ERR, "Could not run script %s, %d.\n", script, errno);
+            exit(1);
+            break;
+        }
+        case -1:
+            dbg_log(LOG_ERR, "Could not fork for script %s, %d\n", script, errno);
+            break;
+        default:
+            break;
+    }
+    return pid;
 }

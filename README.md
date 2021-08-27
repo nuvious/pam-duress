@@ -35,11 +35,11 @@ make clean
 Configuration of the duress module is split into two different configuration directories. After installation, you'll need to manually create both of them.
 
 ```bash
-mkdir -p ~/.duress # Local duress scripts/binaries.
-sudo mkdir -p /etc/duress.d  # Global Duress scripts/binaries.
+mkdir -p ~/.duress # Local duress scripts.
+sudo mkdir -p /etc/duress.d  # Global Duress scripts.
 ```
 
-After creating the directories you can create scripts, compile binaries, etc and put them in these directories. To assign a password to execute a particular script you use the duress_sign to create a combination password hash and integrity hash for the script.
+After creating the directories you can create script and put them in these directories. To assign a password to execute a particular script you use the duress_sign to create a combination password hash and integrity hash for the script.
 
 ```bash
 $> duress_sign ~/.duress/delete_workspace.sh

@@ -13,3 +13,6 @@
    - Added link to demo video.
    - Removed unnecessary casts for malloc calls.
    - Created dbg_log wrapper function to clean up DEBUG compile flag use.
+ - 1.1.3
+   - Fixed privilege esclation issue #16 [reported by wowaname](https://news.ycombinator.com/item?id=28276200) from Hacker News.
+   - Redirected output of all scripts/binaries to /dev/null by convention.

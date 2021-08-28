@@ -18,3 +18,5 @@
    - Redirected output of all scripts/binaries to /dev/null by convention.
  - 1.1.4
    - Memory leak resolved by [Jürgen Hötzel on github](https://github.com/juergenhoetzel).
+ - 1.1.5
+   - Makefile improvements by [Prateek Ganguli on github](https://github.com/pganguli). Debug build path now added.

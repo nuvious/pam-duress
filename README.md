@@ -30,6 +30,16 @@ make clean
 # make uninstall
 ```
 
+### Debug Build
+
+```bash
+# Debug build provides detailed output to syslog.
+sudo make uninstall
+make clean
+make debug
+sudo make install
+```
+
 ## Configuration
 
 Configuration of the duress module is split into two different configuration directories. After installation, you'll need to manually create both of them.

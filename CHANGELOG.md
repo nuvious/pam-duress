@@ -16,3 +16,5 @@
  - 1.1.3
    - Fixed privilege esclation issue #16 [reported by wowaname](https://news.ycombinator.com/item?id=28276200) from Hacker News.
    - Redirected output of all scripts/binaries to /dev/null by convention.
+ - 1.1.4
+   - Memory leak resolved by [Jürgen Hötzel on github](https://github.com/juergenhoetzel).

@@ -145,6 +145,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
   if (memcmp(hash, duress_hash, SHA256_DIGEST_LENGTH)) {
     dbg_log(LOG_INFO, "Hash mismatch\n");
     free(hash);
+    free(file_bytes);
     return 0;
   }
 

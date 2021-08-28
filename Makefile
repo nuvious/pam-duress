@@ -33,6 +33,11 @@ OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 .PHONY: all
 all: $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test $(BIN_DIR)/pam_duress.so
 
+.PHONY: debug
+debug: CFLAGS += -DDEBUG
+debug: $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test $(BIN_DIR)/pam_duress.so
+
+.PHONY: install
 install: $(BIN_DIR)/pam_duress.so $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test
 	mkdir -p $(PAM_DIR)
 	strip $(BIN_DIR)/*

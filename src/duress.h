@@ -1,5 +1,3 @@
-#define DEBUG
-
 #ifndef DURESS_H_
 #define DURESS_H_
 #define PAM_SM_ACCOUNT

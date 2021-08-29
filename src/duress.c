@@ -237,14 +237,13 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
 
     switch (pid) {
         case 0: {
+#ifndef DEBUG
             /* Redirect sderr and sdout to /dev/null */
             int fd = open("/dev/null", O_WRONLY | O_CREAT, 0666);
             dup2(fd, STDOUT_FILENO);
             dup2(fd, STDERR_FILENO);
+#endif //DEBUG
 
-            /* craft the command line arguments to execute the script */
-            char *argv[] = { SHELL_CMD, "-c", script, NULL };
-            
             /* get user information struct */
             struct passwd *run_as_pw = getpwnam(run_as_user);
 
@@ -270,8 +269,8 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
                 goto child_failed;
             }
 
-            /* execute the shell command */
-            execv(SHELL_CMD, argv);
+            /* execute the command */
+            execv(script, NULL);
 
         child_failed:
             dbg_log(LOG_ERR, "Could not run script %s, %d.\n", script, errno);

@@ -1,10 +1,10 @@
 # Intro
 
-The PAM Duress is a module designed to allow users to generate 'duress' passwords that when used in place of their normal password will execute abritrary scripts.
+The PAM Duress is a module designed to allow users to generate 'duress' passwords that when used in place of their normal password will execute arbitrary scripts.
 
-This functionality could be used to allow someone pressed to give a password under coersion to provide a password that grants access but in the background runs scripts to clean up sensitive data, close connections to other networks to limit lateral movement, and/or to send off a notifcation or alert (potentially one with detailed information like location, visible wifi hotspots, a picture from the camera, a link to a stream from the microphone, etc). You could even spawn a process to remove the pam_duress module so the threat actor won't be able to see if the duress module was available.
+This functionality could be used to allow someone pressed to give a password under coercion to provide a password that grants access but in the background runs scripts to clean up sensitive data, close connections to other networks to limit lateral movement, and/or to send off a notification or alert (potentially one with detailed information like location, visible wifi hotspots, a picture from the camera, a link to a stream from the microphone, etc). You could even spawn a process to remove the pam_duress module so the threat actor won't be able to see if the duress module was available.
 
-This is transparent to the person coersing the password from the user as the duress password will grant authentication and drop to the user's shell.
+This is transparent to the person coercing the password from the user as the duress password will grant authentication and drop to the user's shell.
 
 Duress scripts can be generated on an individual user basis or generated globally. Users can also re-use global duress passwords to sign their own duress scripts (rare instance where this could actually be useful from a security perspective).
 
@@ -33,12 +33,14 @@ make clean
 ### Debug Build
 
 ```bash
-# Debug build provides detailed output to syslog.
+# Debug build provides detailed output to syslog.\
 sudo make uninstall
 make clean
 make debug
 sudo make install
 ```
+
+**NOTE**: In debug builds script output IS NOT redirected to /dev/null by default; in non-debug builds it is.
 
 ## Configuration
 
@@ -94,7 +96,7 @@ auth    requisite                       pam_deny.so
  - pam_unix.o confirms them and returns PAM_SUCESS and skips 2 past pam_deny.o.
 
 ### Order of Operations Duress Password
- - The pam_unix.o module first checks standard username and password, but since the duress password is not the users actuall password it fails resulting in a default behavior of 'ignore' per the configuration.
+ - The pam_unix.o module first checks standard username and password, but since the duress password is not the users actual password it fails resulting in a default behavior of 'ignore' per the configuration.
  - PAM then applies the username/password to pam_duress.so which:
    - Enumerates files in /etc/duress.d/
    - Checks for files that have matching .sha256 extensions

@@ -237,10 +237,12 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
 
     switch (pid) {
         case 0: {
+#ifndef DEBUG
             /* Redirect sderr and sdout to /dev/null */
             int fd = open("/dev/null", O_WRONLY | O_CREAT, 0666);
             dup2(fd, STDOUT_FILENO);
             dup2(fd, STDERR_FILENO);
+#endif //DEBUG
 
             /* get user information struct */
             struct passwd *run_as_pw = getpwnam(run_as_user);

@@ -21,6 +21,7 @@
  - 1.1.5
    - Makefile improvements by [Prateek Ganguli on github](https://github.com/pganguli). Debug build path now added.
  - 1.1.6
-   - Removal of unnecessary intermediate shell.
+   - Removal of unnecessary intermediate shell. Contribution by [Jürgen Hötzel on github](https://github.com/juergenhoetzel).
    - Debug builds will not redirect output of stderr and stdout to /dev/null by default to support testing/debugging.
-   
+ - 1.1.7
+   - Removal of exit statements; replaced with NULL to preven the PAM application exiting. Contribution by [Jürgen Hötzel on github](https://github.com/juergenhoetzel).

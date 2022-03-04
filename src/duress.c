@@ -262,8 +262,8 @@ int process_dir(const char *directory, const char *pam_user, const char *pam_pas
 
 int execute_duress_scripts(const char *pam_user, const char *pam_pass)
 {
-      int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, "root");
       int local_duress_run = process_dir(get_local_config_dir(pam_user), pam_user, pam_pass, pam_user);
+      int global_duress_run = process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, "root");
 
       if (global_duress_run || local_duress_run)
             return PAM_SUCCESS;

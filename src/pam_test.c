@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 		retval = pam_authenticate(pamh, 0);
 	}
 
-	/* Can the accound be used at this time? */
+	/* Can the account be used at this time? */
 	if (retval == PAM_SUCCESS)
 	{
 		printf("Account is valid.\n");

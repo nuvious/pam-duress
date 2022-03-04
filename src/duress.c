@@ -60,7 +60,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
     return 0;
   }
 
-  /* Allowed permisions are 500, 540, and 550
+  /* Allowed permissions are 500, 540, and 550
      Ensure file is readable and executable by the user. */
   if ((st.st_mode & S_IRUSR) == 0) {
     dbg_log(LOG_INFO, "Improper permissions. USR R\n");
@@ -94,7 +94,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
   char *hash_file = get_hash_filename(filepath);
   struct stat st_hash;
   if (stat(hash_file, &st_hash) == -1) {
-    dbg_log(LOG_ERR, "Error reading hash file.\n");
+    dbg_log(LOG_ERR, "Error reading hash file, %s\n", strerror(errno));
     return 0;
   }
 
@@ -165,7 +165,7 @@ int process_dir(const char *directory, const char *pam_user,
   dbg_log(LOG_INFO, "Processing %s.\n", directory);
 
   if (dr == NULL) {
-    dbg_log(LOG_ERR, "Could not open directory %s, %d.\n", directory, errno);
+    dbg_log(LOG_ERR, "Could not open directory %s, %s.\n", directory, strerror(errno));
     return ret;
   }
 
@@ -200,7 +200,7 @@ int execute_duress_scripts(const char *pam_user, const char *pam_pass) {
     local_duress_run = process_dir(local_config_dir, pam_user, pam_pass, pam_user);
 
   /* 
-   * Run global next; allows a durress script to be generated to uninstall
+   * Run global next; allows a duress script to be generated to uninstall
    * pam-duress
    */
   int global_duress_run =
@@ -241,7 +241,11 @@ int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc,
 }
 
 pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) {
+    if (pam_user == NULL)
+      return -1;
+
     pid_t pid = fork();
+    char *script_args[] = {};
 
     switch (pid) {
         case 0: {
@@ -256,37 +260,38 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
             struct passwd *run_as_pw = getpwnam(run_as_user);
 
             /* set PAMUSER environment variable for use in /etc/duress.d scripts */
-            if (setenv("PAMUSER", pam_user, 1)) {
-                dbg_log(LOG_ERR, "Could not set environment for PAMUSER to %s, %d.\n", pam_user, errno);
+            if (setenv(PAM_USER_ENV_VAR_NAME, pam_user, 1)) {
+                dbg_log(LOG_ERR, "Could not set environment for PAMUSER to %s, %s.\n", pam_user, strerror(errno));
                 goto child_failed;
             }
 
             if (!run_as_pw) {
-                dbg_log(LOG_ERR, "Could not getpwnam %s, %d.\n", run_as_user, errno);
+                dbg_log(LOG_ERR, "Could not getpwnam %s, %s.\n", run_as_user, strerror(errno));
                 goto child_failed;
             }
 
             /* set the group first; calls to setuid lock out the ability to call setgid */
             if (setgid(run_as_pw->pw_gid)) {
-                dbg_log(LOG_ERR, "Could not setgid, %d.\n", errno); 
+                dbg_log(LOG_ERR, "Could not setgid, %s.\n", strerror(errno)); 
                 goto child_failed;
             }
             /* call setuid */
             if (setuid(run_as_pw->pw_uid)) {
-                dbg_log(LOG_ERR, "Could not setuid, %d.\n", errno); 
+                dbg_log(LOG_ERR, "Could not setuid, %s.\n", strerror(errno)); 
                 goto child_failed;
             }
 
             /* execute the command */
-            execv(script, NULL);
+            dbg_log(LOG_DEBUG, "Executing %s.", script);
+            execv(script, script_args);
 
         child_failed:
-            dbg_log(LOG_ERR, "Could not run script %s, %d.\n", script, errno);
+            dbg_log(LOG_ERR, "Could not run script %s, %s.\n", script, strerror(errno));
             exit(1);
             break;
         }
         case -1:
-            dbg_log(LOG_ERR, "Could not fork for script %s, %d\n", script, errno);
+            dbg_log(LOG_ERR, "Could not fork for script %s, %s\n", script, strerror(errno));
             break;
         default:
             break;

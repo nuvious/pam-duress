@@ -1,7 +1,8 @@
-[<- Back to README.md](../../README.md)
 # Intro
 
-One simple use case for a duress password is to simply notify IT of the user being in duress. In this demonstration we'll create a script which sends a pushover notification with the username reporting the duress, the hostname, and the current IP.
+One simple use case for a duress password is to simply notify IT of the user being in duress. In this demonstration
+we'll create a script which sends a pushover notification with the username reporting the duress, the hostname, and the
+current IP.
 
 ## Requirements
 
@@ -13,7 +14,8 @@ sudo apt-get install curl
 
 ## The Script
 
-First we'll make a pushover script. The first step for that should be to generate an app in your pushover account for this purpose. Then you'll want to generate an configuration file:
+First we'll make a pushover script. The first step for that should be to generate an app in your pushover account for
+this purpose. Then you'll want to generate an configuration file:
 
 ```bash
 # /root/.pushover_creds
@@ -66,10 +68,15 @@ sudo chmod 500 /etc/duress.d/pushover.sh
 sudo chmod 400 /etc/duress.d/pushover.sh.sha256
 ```
 
-This will produce a pushover.sh.sha256 file. The has is not the direct hash of the file but rather the hash of the password salted with the sha256 hash of the file.
+This will produce a pushover.sh.sha256 file. The has is not the direct hash of the file but rather the hash of the
+password salted with the sha256 hash of the file.
 
-You can then distribute this global configuration's password to new users you can simply give them the password. Before local configurations are run a password provided to the duress module will be checked against the hashes of the scripts in /etc/duress.d. If the password matches the script wil be run with root privileges.
+You can then distribute this global configuration's password to new users you can simply give them the password.
+Before local configurations are run a password provided to the duress module will be checked against the hashes of the
+scripts in /etc/duress.d. If the password matches the script wil be run with root privileges.
 
-**SECURITY NOTE:** If a person who is granted one of these shared passwords leaves the group/organization/etc, you should immediately re-sign the script. This is in keeping with the best practices of using organizational duress-words; they must be kept secret and need-to-know and if someone leaves the group, they don't need to know anymore so change it.
+**SECURITY NOTE:** If a person who is granted one of these shared passwords leaves the group/organization/etc, you
+should immediately re-sign the script. This is in keeping with the best practices of using organizational duress-words;
+they must be kept secret and need-to-know and if someone leaves the group, they don't need to know anymore so change it.
 
 [<- Back to README.md](../../README.md)

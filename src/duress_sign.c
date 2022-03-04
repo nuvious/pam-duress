@@ -10,7 +10,7 @@ int main(int argc, const char *argv[])
     else
     {
         /* Get the password and copy it to a separate buffer.
-           get_pass uses a signle buffer so callint it twice
+           get_pass uses a single buffer so calling it twice
            in a row will just return the same buffer which will then
            hold the second password entered in the confirmation,
            resulting in the strcmp always returning 0 */
@@ -29,7 +29,7 @@ int main(int argc, const char *argv[])
         }
         else
         {
-            /* Read int he file to be signed */
+            /* Read in the file to be signed */
             struct stat st;
             if (stat(argv[1], &st) == -1)
                 return EINVAL;
@@ -42,7 +42,7 @@ int main(int argc, const char *argv[])
                 free(file_bytes);
                 return EINVAL;
             }
-            printf("Reading %s, %lld...\n", argv[1], st.st_size);
+            printf("Reading %s, %ld...\n", argv[1], st.st_size);
             fread(file_bytes, 1, st.st_size, fileptr);
             printf("Done\n");
             fclose(fileptr);

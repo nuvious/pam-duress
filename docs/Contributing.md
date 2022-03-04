@@ -15,7 +15,8 @@ All development will be hosted and maintained in GitHub.
 
 ## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html)
 
-Code Changes Happen Through Pull Requests. Pull requests are the best way to propose changes to the codebase. We actively welcome your pull requests:
+Code Changes Happen Through Pull Requests. Pull requests are the best way to propose changes to the codebase. We
+actively welcome your pull requests:
 
 1. Fork the repo and create your branch from `main`.
 2. If you've added code that should be tested, add tests.
@@ -26,11 +27,13 @@ Code Changes Happen Through Pull Requests. Pull requests are the best way to pro
 
 ## Any contributions you make will be under the GNU LESSER GENERAL PUBLIC LICENSE v3
 
-In short, when you submit code changes, your submissions are understood to be under the same [LGPL v3](https://www.gnu.org/licenses/lgpl-3.0.txt) that covers the project.
+In short, when you submit code changes, your submissions are understood to be under the same
+[LGPL v3](https://www.gnu.org/licenses/lgpl-3.0.txt) that covers the project.
 
 ## Report bugs using Github's [issues](https://github.com/briandk/transcriptase-atom/issues)
 
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/nuvious/pam-duress/issues).
+We use GitHub issues to track public bugs. Report a bug by
+[opening a new issue](https://github.com/nuvious/pam-duress/issues).
 
 **Bug Reports Should Include**:
 
@@ -40,7 +43,8 @@ We use GitHub issues to track public bugs. Report a bug by [opening a new issue]
   - Give sample code if you can
 - What you expected would happen
 - What actually happens
-- Notes (possibly including why you think this might be happening, any mitigations/resolutions you tried and their effectiveness)
+- Notes (possibly including why you think this might be happening or any mitigations/resolutions you tried and their
+  effectiveness)
 
 ## Use a Consistent Coding Style
 

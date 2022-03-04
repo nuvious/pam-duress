@@ -3,7 +3,7 @@ OBJ_DIR := obj
 SRC_DIR := src
 CC := gcc
 CPP := g++
-CFLAGS := -fPIC -fno-stack-protector
+CFLAGS := -O2 -fPIC -fno-stack-protector
 
 OS := $(shell uname)
 ifeq ($(OS),Darwin)
@@ -21,7 +21,6 @@ ifeq ($(OS),Darwin)
 	PAM_DIR := /usr/local/lib/pam
 else
 	LDLIB := -lpam -lpam_misc -lssl -lcrypto -lc
-	LDINCLUDE := $(LDLIB)
 	LDFLAGS := -x -shared
 	PAM_DIR := /lib/security
 endif
@@ -32,36 +31,42 @@ SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 .PHONY: all
-all: $(OBJS) $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test $(BIN_DIR)/pam_duress.so
+all: $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test $(BIN_DIR)/pam_duress.so
 
+.PHONY: debug
+debug: CFLAGS += -DDEBUG
+debug: $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test $(BIN_DIR)/pam_duress.so
+
+.PHONY: install
 install: $(BIN_DIR)/pam_duress.so $(BIN_DIR)/duress_sign $(BIN_DIR)/pam_test
 	mkdir -p $(PAM_DIR)
+	strip $(BIN_DIR)/*
 	cp $(BIN_DIR)/pam_duress.so $(PAM_DIR)/
 	cp $(BIN_DIR)/duress_sign $(BIN_INSTALL)/
 	cp $(BIN_DIR)/pam_test $(BIN_INSTALL)/
 
 $(OBJS): $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< $(LDINCLUDE) -o $@
+	$(CC) -o $@ $(CFLAGS) -c $< $(LDINCLUDE)
 
-$(BIN_DIR)/duress_sign: $(OBJS)
+$(BIN_DIR)/duress_sign: $(OBJ_DIR)/duress_sign.o $(OBJ_DIR)/util.o
 	mkdir -p $(BIN_DIR)
-	$(CC) -o $@ $(OBJ_DIR)/duress_sign.o $(OBJ_DIR)/util.o $(LDLIB)
+	$(CC) -o $@ $^ $(LDLIB)
 
-$(BIN_DIR)/pam_duress.so:  $(OBJS)
-	ld $(LDFLAGS) -o $@ $(OBJ_DIR)/duress.o $(OBJ_DIR)/util.o $(LDLIB)
+$(BIN_DIR)/pam_duress.so: $(OBJ_DIR)/duress.o $(OBJ_DIR)/util.o
+	ld $(LDFLAGS) -o $@ $^ $(LDLIB)
 
-$(BIN_DIR)/pam_test:
+$(BIN_DIR)/pam_test: $(SRC_DIR)/pam_test.c
 	mkdir -p $(BIN_DIR)
-	$(CC) -o $@ src/pam_test.c $(LDLIB)
+	$(CC) -o $@ $^ $(LDLIB)
 
 .PHONY: uninstall
 uninstall:
-	rm -rf $(PAM_DIR)/pam_duress.so
-	rm -rf $(BIN_INSTALL)/duress_sign
-	rm -rf $(BIN_INSTALL)/pam_test
+	rm -f $(PAM_DIR)/pam_duress.so
+	rm -f $(BIN_INSTALL)/duress_sign
+	rm -f $(BIN_INSTALL)/pam_test
 
 .PHONY: clean
 clean:
-	rm -rf $(OBJ_DIR)/*.o
-	rm -rf $(BIN_DIR)/*
+	rm -rf $(OBJ_DIR)/
+	rm -rf $(BIN_DIR)/

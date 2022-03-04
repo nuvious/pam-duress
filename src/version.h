@@ -3,6 +3,6 @@
 
 #define VERS_MAJOR 1
 #define VERS_MINOR 1
-#define VERS_REVISION 2
+#define VERS_REVISION 7
 
 #endif

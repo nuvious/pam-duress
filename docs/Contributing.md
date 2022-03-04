@@ -1,5 +1,5 @@
 [<- Back to README.md](../README.md)
-# Contributing to Transcriptase
+# Contributing to PAM-Duress
 
 Continued development on this module is welcome! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
@@ -23,7 +23,7 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 5. Make sure your code lints.
 6. Issue that pull request!
 
-## Any contributions you make will be under the MIT Software License
+## Any contributions you make will be under the GNU LESSER GENERAL PUBLIC LICENSE v3
 In short, when you submit code changes, your submissions are understood to be under the same [LGPL v3](https://www.gnu.org/licenses/lgpl-3.0.txt) that covers the project.
 
 ## Report bugs using Github's [issues](https://github.com/briandk/transcriptase-atom/issues)

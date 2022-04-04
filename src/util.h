@@ -34,6 +34,6 @@ char *get_local_config_dir(const char *user_name);
 
 void write_file_hash(const char *filepath, unsigned char *hash);
 
-unsigned char *sha_256_sum(const char *payload, size_t payload_size, const char *salt, size_t salt_size);
+unsigned char *sha_256_sum(const char *payload, size_t payload_size, const unsigned char *salt, size_t salt_size);
 
 #endif

@@ -1,4 +1,5 @@
 # Changelog
+
 - 2.0.0
   - **BREAKING CHANGE:** Changed run order of scripts to run user scripts first and system scripts after. This enables
     the possibility of uninstalling pam-duress as a system level operation.

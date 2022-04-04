@@ -74,32 +74,36 @@ char *get_local_config_dir(const char *user_name)
     if (buffer == NULL)
     {
         syslog(LOG_INFO, "Failed to allocate buffer for getpwnam_r.\n");
+        free(pwd);
         return NULL;
     }
     getpwnam_r(user_name, pwd, buffer, buffer_len, &pwd);
     if (pwd == NULL)
     {
         syslog(LOG_INFO, "getpwnam_r failed to find requested entry.\n");
+        free(buffer);
+        free(pwd);
         return NULL;
     }
 
-    free(buffer);
-    const char *home_dir = pwd->pw_dir;
+    // NOLINTNEXTLINE (clang-analyzer-unix.Malloc") Not sure why this is flagging since pwd is freed before returning.
+    const char *home_dir = pwd->pw_dir; 
     size_t final_path_len = strlen(home_dir) + strlen(LOCAL_CONFIG_DIR_SUFFIX) + 1;
-    char *config_dir = malloc(final_path_len); // + 2 for null at the end and additonal / character.
+    char *config_dir = malloc(final_path_len); // + 1 for null at the end and additional '/' character.
     memcpy(config_dir, home_dir, strlen(home_dir));
     memcpy(config_dir + strlen(home_dir), LOCAL_CONFIG_DIR_SUFFIX, strlen(LOCAL_CONFIG_DIR_SUFFIX));
     config_dir[final_path_len - 1] = 0;
-
+    free(pwd);
+    free(buffer);
     return config_dir;
 }
 
-unsigned char *sha_256_sum(const char *payload, size_t payload_size, const char *salt, size_t salt_size)
+unsigned char *sha_256_sum(const char *payload, size_t payload_size, const unsigned char *salt, size_t salt_size)
 {
     unsigned char salt_hash[SHA256_DIGEST_LENGTH];
     SHA256(salt, salt_size, salt_hash);
     unsigned char *payload_hash = malloc(SHA256_DIGEST_LENGTH);
-    char *salted_pass = malloc(SHA256_DIGEST_LENGTH + payload_size);
+    unsigned char *salted_pass = malloc(SHA256_DIGEST_LENGTH + payload_size);
     memcpy(salted_pass, salt_hash, SHA256_DIGEST_LENGTH);
     memcpy(salted_pass + SHA256_DIGEST_LENGTH, payload, payload_size);
     SHA256(salted_pass, SHA256_DIGEST_LENGTH + payload_size, payload_hash);

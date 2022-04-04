@@ -23,6 +23,8 @@
 #include <stdarg.h>
 #endif /* DEBUG */
 
+const char *PAM_USER_ENV_VAR_NAME = "PAMUSER";
+
 /*
  *Logging wrapper for syslog with DEBUG compile flag wrapper.
  */

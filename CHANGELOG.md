@@ -1,11 +1,11 @@
 # Changelog
-
 - 2.0.0
   - **BREAKING CHANGE:** Changed run order of scripts to run user scripts first and system scripts after. This enables
     the possibility of uninstalling pam-duress as a system level operation.
   - Linted with clang-tidy. No linter errors in files.
   - Changed outputs of errno to strerror(errno).
   - General spelling pass.
+  - 20220404 - DOC ONLY UPDATE: Added Arch Linux Documentation
 - 1.1.7
   - Removal of exit statements; replaced with NULL to prevent the PAM application exiting. Contribution by
     [Jürgen Hötzel on github](https://github.com/juergenhoetzel).

@@ -72,14 +72,17 @@ the definition of 'bad' in this instance is:
 
 ```
 bad
-	this action indicates that the return code should be thought of as indicative of the module failing. If this module is the first in the stack to fail, its status value will be used for that of the whole stack.
+	this action indicates that the return code should be thought of as indicative
+of the module failing. If this module is the first in the stack to fail, its status
+value will be used for that of the whole stack.
 ```
 
 This is in contrast to ignore:
 
 ```
 ignore
-	when used with a stack of modules, the module's return status will not contribute to the return code the application obtains.
+	when used with a stack of modules, the module's return status will not
+contribute to the return code the application obtains.
 ```
 
 With Arch's initial intent to be a return of bad on a bad password we want
@@ -88,6 +91,16 @@ stack fail and rather handle `pam_duress` and defer failures to it. This
 preserves the desired behavior of dropping the person entering the duress
 password into a normal authenticated shell without recording any failed
 password entries in `pam_faillock`.
+
+## NOTE: Use ssh instead of pam_test
+
+Though `pam_test` is a part of this repo it doesn't seem to be effective on
+on Arch system; see [Issue 29](https://github.com/nuvious/pam-duress/issues/29).
+
+Instead of using `pam_test` use `ssh USER@localhost`. This will simulate a
+remote login and should trigger the full duress chain.
+
+## Remaining Configuration
 
 All further configurations regarding creation, signing and permissions for
 duress scripts are the same, so continue in the

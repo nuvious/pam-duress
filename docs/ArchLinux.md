@@ -12,7 +12,7 @@ For the dependencies arch packages the development libraries with opensll
 so your dependencies look more like the below:
 
 ```bash
-sudo pacman -u
+sudo pacman -Su
 sudo pacman -S base-devel openssl
 ```
 

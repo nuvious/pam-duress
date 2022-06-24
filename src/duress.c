@@ -95,6 +95,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
   struct stat st_hash;
   if (stat(hash_file, &st_hash) == -1) {
     dbg_log(LOG_ERR, "Error reading hash file, %s\n", strerror(errno));
+    free(hash_file);
     return 0;
   }
 
@@ -109,6 +110,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
   if (hashfileptr == NULL) {
     dbg_log(LOG_ERR, "Error reading %s, %d...\n", hash_file, st.st_size);
     free(hash);
+    free(hash_file);
     return 0;
   }
   fread(hash, 1, SHA256_DIGEST_LENGTH, hashfileptr);
@@ -146,11 +148,13 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
     dbg_log(LOG_INFO, "Hash mismatch\n");
     free(hash);
     free(file_bytes);
+    free(duress_hash);
     return 0;
   }
 
   free(hash);
   free(file_bytes);
+  free(duress_hash);
 
   return result;
 }
@@ -196,8 +200,10 @@ int execute_duress_scripts(const char *pam_user, const char *pam_pass) {
   // Run user level first
   int local_duress_run = 0;
   char *local_config_dir = get_local_config_dir(pam_user);
-  if (local_config_dir != NULL)
+  if (local_config_dir != NULL) {
     local_duress_run = process_dir(local_config_dir, pam_user, pam_pass, pam_user);
+    free(local_config_dir);
+  }
 
   /* 
    * Run global next; allows a duress script to be generated to uninstall

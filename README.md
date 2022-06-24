@@ -139,7 +139,7 @@ It is easy to do a quick test to ensure the duress module is working properly.
 
 ```bash
 $> mkdir -p ~/.duress
-$> echo 'echo "Hello World"' > ~/.duress/hello.sh
+$> echo -e '#!/bin/sh\necho "Hello World"' > ~/.duress/hello.sh
 $> duress_sign ~/.duress/hello.sh
 Password: # Enter a duress password that is NOT your actual password.
 Confirm: 

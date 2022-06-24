@@ -200,7 +200,8 @@ int execute_duress_scripts(const char *pam_user, const char *pam_pass) {
   // Run user level first
   int local_duress_run = 0;
   char *local_config_dir = get_local_config_dir(pam_user);
-  if (local_config_dir != NULL) {
+  if (local_config_dir != NULL) 
+  {
     local_duress_run = process_dir(local_config_dir, pam_user, pam_pass, pam_user);
     free(local_config_dir);
   }

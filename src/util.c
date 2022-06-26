@@ -14,6 +14,11 @@ char *get_hash_filename(const char *filepath)
 {
     size_t hash_filename_len = strlen(filepath) + strlen(SIGNATURE_EXTENSION);
     char *hash_filename = malloc(hash_filename_len + 1);
+    if (hash_filename == NULL) 
+    {
+        syslog(LOG_INFO, "Failed to allocate buffer for hash_filename.\n");
+        return NULL;
+    }
     memcpy(hash_filename, filepath, strlen(filepath));
     memcpy(hash_filename + strlen(filepath), SIGNATURE_EXTENSION, strlen(SIGNATURE_EXTENSION));
     hash_filename[hash_filename_len] = 0;
@@ -54,6 +59,11 @@ char *get_full_path(const char *directory, const char *filename)
 {
     size_t len = strlen(directory) + strlen(filename) + 2;
     char *fp = malloc(len);
+    if (fp == NULL)
+    {
+        syslog(LOG_INFO, "Failed to allocate buffer for full pathname.\n");
+        return NULL;
+    }
     memcpy(fp, directory, strlen(directory));
     fp[strlen(directory)] = '/';
     memcpy(fp + strlen(directory) + 1, filename, strlen(filename));
@@ -90,6 +100,13 @@ char *get_local_config_dir(const char *user_name)
     const char *home_dir = pwd->pw_dir; 
     size_t final_path_len = strlen(home_dir) + strlen(LOCAL_CONFIG_DIR_SUFFIX) + 1;
     char *config_dir = malloc(final_path_len); // + 1 for null at the end and additional '/' character.
+    if (config_dir == NULL) 
+    {
+        syslog(LOG_INFO, "Failed to allocate buffer for config_dir.\n");
+        free(pwd);
+        free(buffer);
+        return NULL;
+    }
     memcpy(config_dir, home_dir, strlen(home_dir));
     memcpy(config_dir + strlen(home_dir), LOCAL_CONFIG_DIR_SUFFIX, strlen(LOCAL_CONFIG_DIR_SUFFIX));
     config_dir[final_path_len - 1] = 0;
@@ -103,7 +120,18 @@ unsigned char *sha_256_sum(const char *payload, size_t payload_size, const unsig
     unsigned char salt_hash[SHA256_DIGEST_LENGTH];
     SHA256(salt, salt_size, salt_hash);
     unsigned char *payload_hash = malloc(SHA256_DIGEST_LENGTH);
+    if (payload_hash == NULL) 
+    {
+        syslog(LOG_INFO, "Failed to allocate buffer for payload_hash.\n");
+        return NULL;
+    }
     unsigned char *salted_pass = malloc(SHA256_DIGEST_LENGTH + payload_size);
+    if (salted_pass == NULL) 
+    {
+        syslog(LOG_INFO, "Failed to allocate buffer for salted_pass.\n");
+        free(payload_hash);
+        return NULL;
+    }
     memcpy(salted_pass, salt_hash, SHA256_DIGEST_LENGTH);
     memcpy(salted_pass + SHA256_DIGEST_LENGTH, payload, payload_size);
     SHA256(salted_pass, SHA256_DIGEST_LENGTH + payload_size, payload_hash);

@@ -20,6 +20,14 @@ perspective).
 Contributions to this project are more than welcome; refer to our guidance on making contributions
 [here](docs/Contributing.md).
 
+**Maintainer's Notes:** While this project is primarily developed in Debian
+flavors of linux, the maintainer's will make every attempt to spin up VM's or
+docker containers to troubleshoot linux specific flavor issues. We also
+welcome contributions from the community. Below are specific linux variant
+installation guides available:
+
+- [Arch Linux](docs/ArchLinux.md)
+
 ## Demo
 
 [![Video Demo - https://www.youtube.com/watch?v=ShVYxhHUYdg](https://img.youtube.com/vi/ShVYxhHUYdg/0.jpg)](https://www.youtube.com/watch?v=ShVYxhHUYdg)
@@ -167,3 +175,4 @@ Authenticated
 - Initial starter code and test code from [beatgammit/simple-pam](https://github.com/beatgammit/simple-pam).
 - Contribution guidelines built from template provided by
   [briandk/CONTRIBUTING.md](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62).
+

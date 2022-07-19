@@ -6,6 +6,7 @@
   - Linted with clang-tidy. No linter errors in files.
   - Changed outputs of errno to strerror(errno).
   - General spelling pass.
+  - 20220404 - DOC ONLY UPDATE: Added Arch Linux Documentation
 - 1.1.7
   - Removal of exit statements; replaced with NULL to prevent the PAM application exiting. Contribution by
     [Jürgen Hötzel on github](https://github.com/juergenhoetzel).

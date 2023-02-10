@@ -8,7 +8,7 @@ CFLAGS := -O2 -fPIC -fno-stack-protector
 OS := $(shell uname)
 ifeq ($(OS),Darwin)
 	# for M1 machines with Rosetta homebrew in /opt
-	PKG_CONFIG_PATH = "$(shell echo $PKG_CONFIG_PATH):/opt/homebrew/opt/openssl/lib/pkgconfig"
+	PKG_CONFIG_PATH = "$(shell echo $$PKG_CONFIG_PATH):/opt/homebrew/opt/openssl/lib/pkgconfig"
 	PC_LIBS := $(shell env PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" pkg-config --libs openssl)
 	PC_INCLUDES := $(shell env PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" pkg-config --cflags openssl)
 	SDK_PATH := /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk

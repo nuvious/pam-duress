@@ -252,7 +252,7 @@ pid_t run_shell_as(const char *pam_user, const char *run_as_user, char *script) 
       return -1;
 
     pid_t pid = fork();
-    char *script_args[] = {};
+    char *script_args[] = {(char*)0};
 
     switch (pid) {
         case 0: {

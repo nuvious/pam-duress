@@ -71,6 +71,14 @@ char *get_full_path(const char *directory, const char *filename)
     return fp;
 }
 
+static size_t get_getpw_r_size_max(void)
+{
+    long sc = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (sc < 0)
+        return 1024;
+    return sc;
+}
+
 char *get_local_config_dir(const char *user_name)
 {
     struct passwd *pwd = (struct passwd *) calloc(1, sizeof(struct passwd));
@@ -79,7 +87,7 @@ char *get_local_config_dir(const char *user_name)
         syslog(LOG_INFO, "Failed to allocate struct passwd for getpwnam_r.\n");
         return NULL;
     }
-    size_t buffer_len = sysconf(_SC_GETPW_R_SIZE_MAX) * sizeof(char);
+    size_t buffer_len = get_getpw_r_size_max() * sizeof(char);
     char *buffer = malloc(buffer_len);
     if (buffer == NULL)
     {

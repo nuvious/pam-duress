@@ -95,10 +95,10 @@ char *get_local_config_dir(const char *user_name)
         free(pwd);
         return NULL;
     }
-    getpwnam_r(user_name, pwd, buffer, buffer_len, &pwd);
-    if (pwd == NULL)
+    int status = getpwnam_r(user_name, pwd, buffer, buffer_len, &pwd);
+    if (status || pwd == NULL)
     {
-        syslog(LOG_INFO, "getpwnam_r failed to find requested entry.\n");
+        syslog(LOG_INFO, "getpwnam_r failed to find requested entry: %d.\n", status);
         free(buffer);
         free(pwd);
         return NULL;

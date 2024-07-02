@@ -8,7 +8,7 @@ submitted by [Dusan Lesan](https://github.com/DusanLesan).
 
 ### Dependencies
 
-For the dependencies arch packages the development libraries with opensll
+For the dependencies arch packages the development libraries with openssl
 so your dependencies look more like the below:
 
 ```bash
@@ -37,7 +37,7 @@ pam-duress you'll need to modify the configuration as follows:
 
 Change system-auth from this:
 
-```
+```bash
 ...
 -auth      [success=3 default=ignore]  pam_systemd_home.so
 auth       [success=1 default=bad]     pam_unix.so          try_first_pass nullok
@@ -50,11 +50,11 @@ auth       required                    pam_faillock.so      authsucc
 
 To this:
 
-```
+```bash
 ...
 -auth      [success=3 default=ignore]  pam_systemd_home.so
-auth       [success=2 default=ignore]     pam_unix.so          try_first_pass nullok
-auth	   [success=1 default=bad]  pam_duress.so
+auth       [success=2 default=ignore]  pam_unix.so          try_first_pass nullok
+auth	   [success=1 default=bad]     pam_duress.so
 auth       [default=die]               pam_faillock.so      authfail
 auth       optional                    pam_permit.so
 auth       required                    pam_env.so

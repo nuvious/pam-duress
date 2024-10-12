@@ -13,7 +13,7 @@ so your dependencies look more like the below:
 
 ```bash
 sudo pacman -Su
-sudo pacman -S base-devel openssl
+sudo pacman --needed -S base-devel openssl
 ```
 
 ### Build and Install

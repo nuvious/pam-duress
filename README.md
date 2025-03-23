@@ -148,7 +148,7 @@ It is easy to do a quick test to ensure the duress module is working properly.
 ```bash
 $> mkdir -p ~/.duress
 $> echo '#!/bin/sh
-echo "Hello World"' > ~/.duress/hello.sh
+echo "Hello World" > /tmp/test.txt' > ~/.duress/hello.sh
 $> duress_sign ~/.duress/hello.sh
 Password: # Enter a duress password that is NOT your actual password.
 Confirm: 
@@ -157,14 +157,18 @@ $> chmod 400 ~/.duress/hello.sh.sha256
 $> sudo pam_test $USER
 Credentials accepted.
 Password: # Enter the password you signed the hello.sh script with.
-Hello World # This output is from the duress script...
 Account is valid. # ...and we still got a valid authentication.
 Authenticated
+$> cat /tmp/test.txt
+Hello World # This shows the test.txt file was created and therefore the script was executed
+$> rm /tmp/test.txt
 $> sudo pam_test $USER
 Credentials accepted.
 Password: # Now enter your actual password.
 Account is valid. # Note, Hello World doesn't print.
 Authenticated
+$> cat /tmp/test.txt
+cat: /tmp/test.txt: No such file or directory # this shows the file wasn't created and therefore the script wasn't executed
 ```
 
 ## Example Implementations

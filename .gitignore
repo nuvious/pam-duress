@@ -4,3 +4,6 @@
 
 # Files which may be generated when initially testing generate files.
 *.sha256
+
+# VS Code
+.vscode

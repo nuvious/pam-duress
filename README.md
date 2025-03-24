@@ -27,6 +27,7 @@ welcome contributions from the community. Below are specific linux variant
 installation guides available:
 
 - [Arch Linux](docs/ArchLinux.md)
+- [Red Hat Family of Linux](docs/RHLinux.md)
 
 ## Demo
 

@@ -19,11 +19,13 @@ sudo dnf install pam-devel -y
 
 ### Build and Install
 
-The build and installation steps remain the same.
+As noted in [Issue 51](https://github.com/nuvious/pam-duress/issues/51), the
+location of PAM so libraries is in `/usr/lib64/security` in Red Hat variants so
+we simply need to set that in the installation command:
 
 ```bash
 make
-sudo make install
+sudo make install PAM_DIR=/usr/lib64/security
 make clean
 ```
 
@@ -60,13 +62,18 @@ auth       required                    pam_deny.so
 ...
 ```
 
-## NOTE: Use ssh instead of pam_test
+## Testing
 
-Though `pam_test` is a part of this repo it doesn't seem to be effective on
-on Arch system; see [Issue 29](https://github.com/nuvious/pam-duress/issues/29).
+The `pam_test` doesn't work the same in Red Hat variants as it does in debian
+so to test the configuration you'll simply need to run the following:
 
-Instead of using `pam_test` use `ssh USER@localhost`. This will simulate a
-remote login and should trigger the full duress chain.
+```
+sudo su # Drop into a root shell
+login [USERNAME WITH CONFIGURED DURESS]
+```
+
+After login with a configured duress password, you should see the effects of
+your test applied. 
 
 ## Remaining Configuration
 
@@ -74,4 +81,3 @@ All further configurations regarding creation, signing and permissions for
 duress scripts are the same, so continue in the
 [configuration section of the README](../README.md#configuration) to continue
 setting up duress scripts.
-

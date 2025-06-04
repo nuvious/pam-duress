@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
     fileptr = fopen(argv[1], "rb");
     if (fileptr == NULL)
     {
-        printf("Error opening file %s.", argv[1]);
+        printf("Error opening file %s.\n", argv[1]);
         free(password);
         free(file_bytes);
         return EINVAL;

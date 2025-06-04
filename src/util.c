@@ -46,7 +46,7 @@ void write_file_hash(const char *filepath, unsigned char *hash)
     fileptr = fopen(hash_filename, "wb");
     if (fileptr == NULL)
     {
-        printf("ERROR WRITING HASH FILE %s!", hash_filename);
+        printf("ERROR WRITING HASH FILE %s!\n", hash_filename);
         free(hash_filename);
         exit(-1);
     }

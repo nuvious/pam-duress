@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all,+pie
+export DEB_CFLAGS_MAINT_APPEND  = -fPIC
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,-O1
+#RAW_LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS | sed 's/-Wl,//g; s/,/ /g')
+include /usr/share/dpkg/buildtools.mk
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	make CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+
+override_dh_auto_install:
+	install -D -m755 bin/pam_test debian/libpam-duress-bin/usr/bin/pam_test
+	install -D -m755 bin/duress_sign debian/libpam-duress-bin/usr/bin/duress_sign
+	install -D -m644 bin/pam_duress.so debian/libpam-duress/usr/lib/$(DEB_HOST_MULTIARCH)/security/pam_duress.so
+	install -D debian/pam-configs/duress debian/libpam-duress/usr/share/pam-configs/duress
+
+#override_dh_install:
+#	dh_install --list-missing -X.pyc -X.pyo

@@ -1,0 +1,30 @@
+Source: libpam-duress
+Section: admin
+Priority: optional
+Maintainer: David <nuvious@gmail.com>
+Build-Depends: debhelper-compat (= 13), libpam0g-dev, libssl-dev
+Standards-Version: 4.6.1
+Homepage: https://github.com/nuvious/pam-duress/
+Rules-Requires-Root: no
+#Vcs-Git: https://salsa.debian.org/debian/pam-duress-2.0.0.git
+#Vcs-Browser: https://salsa.debian.org/debian/pam-duress-2.0.0
+
+Package: libpam-duress
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: PAM module which allows the establishment of
+ alternate passwords that can be used to perform actions to
+ clear sensitive data, notify IT/Security staff, close off
+ sensitive network connections, etc if a user is coerced
+ into giving a threat actor a password.
+
+Package: libpam-duress-bin
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: PAM module which allows the establishment of
+ alternate passwords that can be used to perform actions to
+ clear sensitive data, notify IT/Security staff, close off
+ sensitive network connections, etc if a user is coerced
+ into giving a threat actor a password.

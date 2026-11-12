@@ -1,0 +1,6 @@
+Name: PAM-Duress alternate passwords that can be used to perform actions
+Default: no
+Priority: 250
+Auth-Type: Primary
+Auth:
+	[success=end default=ignore]	pam_duress.so

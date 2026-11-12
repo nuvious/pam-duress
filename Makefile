@@ -51,14 +51,14 @@ $(OBJS): $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 
 $(BIN_DIR)/duress_sign: $(OBJ_DIR)/duress_sign.o $(OBJ_DIR)/util.o
 	mkdir -p $(BIN_DIR)
-	$(CC) -o $@ $^ $(LDLIB)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDLIB)
 
 $(BIN_DIR)/pam_duress.so: $(OBJ_DIR)/duress.o $(OBJ_DIR)/util.o
-	ld $(LDFLAGS) -o $@ $^ $(LDLIB)
+	$(CC) -shared -o $@ $^ $(CFLAGS) $(LDLIB) $(LDFLAGS)
 
 $(BIN_DIR)/pam_test: $(SRC_DIR)/pam_test.c
 	mkdir -p $(BIN_DIR)
-	$(CC) -o $@ $^ $(LDLIB)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDLIB)
 
 .PHONY: uninstall
 uninstall:

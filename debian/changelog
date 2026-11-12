@@ -1,0 +1,6 @@
+libpam-duress (2.0.0-1) UNRELEASED; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- root <root@localhost>  Thu, 12 Nov 2026 02:12:22 +0000

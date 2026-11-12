@@ -52,7 +52,7 @@ To this:
 
 ```bash
 ...
--auth      [success=3 default=ignore]  pam_systemd_home.so
+-auth      [success=4 default=ignore]  pam_systemd_home.so
 auth       [success=2 default=ignore]  pam_unix.so          try_first_pass nullok
 auth	   [success=1 default=bad]     pam_duress.so
 auth       [default=die]               pam_faillock.so      authfail

@@ -27,7 +27,8 @@ int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc,
   return (PAM_SUCCESS);
 }
 
-int is_valid_duress_file(const char *filepath, const char *pam_pass) {
+int is_valid_duress_file(const char *filepath, const char *pam_pass,
+                         const char *run_as_user) {
   if (access(filepath, R_OK) != 0) {
     dbg_log(LOG_INFO, "User does not have read access to %s.", filepath);
     return 0;
@@ -55,8 +56,21 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
 
   /* Ensure duress file has a signature file with the appended extension */
   const char *ext = get_filename_ext(filepath);
-  if (!strcmp(ext, SIGNATURE_EXTENSION)) {
+  if (ext != NULL && !strcmp(ext, SIGNATURE_EXTENSION)) {
     dbg_log(LOG_INFO, "Is a signature file.\n");
+    return 0;
+  }
+
+  struct passwd *file_pw = getpwnam(run_as_user ? run_as_user : "root");
+  if (file_pw == NULL) {
+    dbg_log(LOG_ERR, "Unable to get information about user %s.\n",
+            run_as_user ? run_as_user : "root");
+    return 0;
+  }
+
+  if (st.st_uid != file_pw->pw_uid) {
+    dbg_log(LOG_ERR, "File %s is owned by uid %ld, expected %ld.\n",
+            filepath, (long)st.st_uid, (long)file_pw->pw_uid);
     return 0;
   }
 
@@ -178,7 +192,7 @@ int process_dir(const char *directory, const char *pam_user,
 
     dbg_log(LOG_INFO, "Processing file %s...\n", fpath);
 
-    if (is_valid_duress_file(fpath, pam_pass)) {
+    if (is_valid_duress_file(fpath, pam_pass, run_as_user)) {
 
       dbg_log(LOG_INFO, "File is valid.\n");
 
@@ -196,13 +210,42 @@ int process_dir(const char *directory, const char *pam_user,
   return ret;
 }
 
+static int is_trusted_config_dir(const char *directory, uid_t owner) {
+  struct stat st;
+  if (lstat(directory, &st) == -1) {
+    dbg_log(LOG_ERR, "Cannot stat directory %s, %s.\n", directory,
+            strerror(errno));
+    return 0;
+  }
+  if (!S_ISDIR(st.st_mode)) {
+    dbg_log(LOG_ERR, "Config path %s is not a directory (symlink?).\n",
+            directory);
+    return 0;
+  }
+  if (st.st_uid != owner) {
+    dbg_log(LOG_ERR, "Directory %s is owned by uid %ld, expected %ld.\n",
+            directory, (long)st.st_uid, (long)owner);
+    return 0;
+  }
+  if (st.st_mode & (S_IWGRP | S_IWOTH)) {
+    dbg_log(LOG_ERR, "Directory %s is group or world-writable.\n",
+            directory);
+    return 0;
+  }
+  return 1;
+}
+
 int execute_duress_scripts(const char *pam_user, const char *pam_pass) {
   // Run user level first
   int local_duress_run = 0;
+  int global_duress_run = 0;
   char *local_config_dir = get_local_config_dir(pam_user);
   if (local_config_dir != NULL) 
   {
-    local_duress_run = process_dir(local_config_dir, pam_user, pam_pass, pam_user);
+    struct passwd *pw = getpwnam(pam_user);
+    if (pw != NULL && is_trusted_config_dir(local_config_dir, pw->pw_uid))
+      local_duress_run = process_dir(local_config_dir, pam_user, pam_pass,
+                                     pam_user);
     free(local_config_dir);
   }
 
@@ -210,8 +253,9 @@ int execute_duress_scripts(const char *pam_user, const char *pam_pass) {
    * Run global next; allows a duress script to be generated to uninstall
    * pam-duress
    */
-  int global_duress_run =
-      process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, NULL);
+  if (is_trusted_config_dir(GLOBAL_CONFIG_DIR, 0))
+    global_duress_run =
+        process_dir(GLOBAL_CONFIG_DIR, pam_user, pam_pass, NULL);
 
   if (global_duress_run || local_duress_run)
     return PAM_SUCCESS;
@@ -232,6 +276,8 @@ int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   pam_err = pam_get_item(pamh, PAM_AUTHTOK, (const void **)&pam_pass);
   dbg_log(LOG_ERR, "PAM ERROR: %d\n", pam_err);
   if (pam_err != PAM_SUCCESS)
+    return PAM_IGNORE;
+  if (pam_pass == NULL || pam_pass[0] == '\0')
     return PAM_IGNORE;
 
   return execute_duress_scripts(pam_user, pam_pass);

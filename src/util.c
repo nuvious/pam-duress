@@ -27,16 +27,10 @@ char *get_hash_filename(const char *filepath)
 
 const char *get_filename_ext(const char *filename)
 {
-    const char *ret = filename;
-    const char *dot;
-    do
-    {
-        dot = strrchr(ret, '.');
-        if (dot == ret || dot == NULL)
-            break;
-        ret = dot;
-    } while (dot);
-    return ret + 1;
+    const char *dot = strrchr(filename, '.');
+    if (dot == NULL || dot == filename)
+        return NULL;
+    return dot;
 }
 
 void write_file_hash(const char *filepath, unsigned char *hash)

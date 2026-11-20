@@ -55,7 +55,7 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
 
   /* Ensure duress file has a signature file with the appended extension */
   const char *ext = get_filename_ext(filepath);
-  if (!strcmp(ext, SIGNATURE_EXTENSION)) {
+  if (ext != NULL && !strcmp(ext, SIGNATURE_EXTENSION)) {
     dbg_log(LOG_INFO, "Is a signature file.\n");
     return 0;
   }

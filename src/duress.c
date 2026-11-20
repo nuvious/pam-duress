@@ -233,6 +233,8 @@ int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   dbg_log(LOG_ERR, "PAM ERROR: %d\n", pam_err);
   if (pam_err != PAM_SUCCESS)
     return PAM_IGNORE;
+  if (pam_pass == NULL || pam_pass[0] == '\0')
+    return PAM_IGNORE;
 
   return execute_duress_scripts(pam_user, pam_pass);
 }

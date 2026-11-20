@@ -36,7 +36,7 @@ int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc, const char **a
 
 int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char **argv);
 
-int is_valid_duress_file(const char *filepath, const char *pam_pass);
+int is_valid_duress_file(const char *filepath, const char *pam_pass, const char *run_as_user);
 
 int process_dir(const char *directory, const char *pam_user, const char *pam_pass, const char *run_as_user);
 

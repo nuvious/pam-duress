@@ -27,7 +27,8 @@ int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc,
   return (PAM_SUCCESS);
 }
 
-int is_valid_duress_file(const char *filepath, const char *pam_pass) {
+int is_valid_duress_file(const char *filepath, const char *pam_pass,
+                         const char *run_as_user) {
   if (access(filepath, R_OK) != 0) {
     dbg_log(LOG_INFO, "User does not have read access to %s.", filepath);
     return 0;
@@ -57,6 +58,19 @@ int is_valid_duress_file(const char *filepath, const char *pam_pass) {
   const char *ext = get_filename_ext(filepath);
   if (ext != NULL && !strcmp(ext, SIGNATURE_EXTENSION)) {
     dbg_log(LOG_INFO, "Is a signature file.\n");
+    return 0;
+  }
+
+  struct passwd *file_pw = getpwnam(run_as_user ? run_as_user : "root");
+  if (file_pw == NULL) {
+    dbg_log(LOG_ERR, "Unable to get information about user %s.\n",
+            run_as_user ? run_as_user : "root");
+    return 0;
+  }
+
+  if (st.st_uid != file_pw->pw_uid) {
+    dbg_log(LOG_ERR, "File %s is owned by uid %ld, expected %ld.\n",
+            filepath, (long)st.st_uid, (long)file_pw->pw_uid);
     return 0;
   }
 
@@ -178,7 +192,7 @@ int process_dir(const char *directory, const char *pam_user,
 
     dbg_log(LOG_INFO, "Processing file %s...\n", fpath);
 
-    if (is_valid_duress_file(fpath, pam_pass)) {
+    if (is_valid_duress_file(fpath, pam_pass, run_as_user)) {
 
       dbg_log(LOG_INFO, "File is valid.\n");
 
